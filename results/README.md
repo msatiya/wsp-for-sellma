@@ -1,6 +1,6 @@
 # Results
 
-All numbers for `Qwen/Qwen3.5-0.8B`, seed 0, CPU x86 container (torch 2.13.0+cu130,
+All numbers for `Qwen/Qwen3.5-0.8B`, seed 0, CPU-only (torch 2.13.0+cu130,
 transformers 5.15.1).
 
 **Model revision:** snapshot `2fc06364715b967f1860aea9cf38778875588b17` (HF cache

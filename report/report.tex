@@ -17,6 +17,10 @@
 \begin{document}
 \maketitle
 
+\begin{quote}
+\textbf{TL;DR.} We tested whether a frontier LLM editing an open model's weights directly (no gradients, no data) can improve Swedish on \texttt{Qwen/Qwen3.5-0.8B}. It cannot: the base model already answers Swedish perfectly, a zero-shot ``improve Swedish'' edit changed \textbf{0 parameters}, and a planted localized fault was \emph{located} by the editor but not \emph{repaired}. Meanwhile a small LoRA fine-tune made Swedish \emph{worse} (English leakage, degenerate repeats). \textbf{Recommendation: do not prioritise WSP for SE.LLMA's capability goal}; its auditing value is no better than a row-norm statistic.
+\end{quote}
+
 \section{Critical examination of the source research}
 
 The source, \textit{Sparks of Weight-Space Programming} (Takehi, Teoh, Zhang \& Khattab, MIT CSAIL, 2026), reports that frontier LLMs can ``read and write'' neural-network weights like code, a capability it terms \textbf{Weight-Space Programming (WSP)}. I assessed it before designing my experiment, focusing on the distinction the assignment highlights: \emph{reasoning about weights directly} versus \emph{optimising edits through repeated model feedback}.
@@ -53,6 +57,7 @@ A clean \emph{negative} result (WSP $\approx$ logit steering) is itself valuable
 
 \begin{table}[h]
 \centering
+\small
 \caption{Experimental arms and what each controls for.}
 \label{tab:arms}
 \begin{tabular}{lll}
@@ -62,22 +67,23 @@ Arm & What it does & Controls for \\
 \texttt{base} & unchanged model & baseline \\
 \texttt{prompt} & Swedish instruction prefix & cheapest existing fix \\
 \texttt{decode} & changed sampling (temperature/top-p) & decoding artifact \\
-\texttt{logit\_bias} & bias on Swedish-token logits & ``is WSP just logit steering?'' \\
-\texttt{random\_edit} & magnitude-matched random perturbation & ``does any edit help?'' \\
+\texttt{logit\_bias} & bias on Swedish-token logits & ``just logit steering?'' \\
+\texttt{random\_edit} & random perturbation (matched magnitude) & ``any edit helps?'' \\
 \texttt{lora} & small LoRA on Swedish examples & SE.LLMA's default alternative \\
 \texttt{wsp\_zero} & DeepSeek reads weights, writes one edit (no feedback) & the claim \\
-\texttt{wsp\_feedback} (stretch) & DeepSeek with a forward-pass budget & reasoning vs.\ feedback \\
+\texttt{wsp\_feedback} (not run) & DeepSeek with a forward-pass budget & reasoning vs.\ feedback \\
 \bottomrule
 \end{tabular}
+\normalsize
 \end{table}
 
 \textbf{Signals.} (1) \emph{Grammar probes} (V2 word order + gender/definite agreement, 16 held-out items) scored by log-likelihood --- a \emph{weight-level} signal insensitive to decoding. (2) \emph{Open-ended response-language} (8 Swedish prompts) scored by an offline Sv/En language-ID --- a \emph{surface} signal. (3) \emph{English regression} (10 factual MCQs) for forgetting. The contrast between (1) and (2) is the key diagnostic: a gain appearing in (2) but not (1) indicates a decoding/logit-level effect, not a genuine weight edit.
 
-\textbf{Reproducibility.} Run on the cluster's x86 login node (CPU) inside an x86 Apptainer image (\texttt{pipeline-cpu.sif}: torch 2.13.0+cu130, transformers 5.15.1), model revision \texttt{2fc0636\ldots}, seed 0, full editor transcripts dumped to \texttt{results*/}; dev/eval probes separated (dev was never used).
+\textbf{Reproducibility.} CPU-only (no GPU); torch 2.13.0, transformers 5.15.1; model revision \texttt{2fc0636\ldots}; seed 0; full editor transcripts in \texttt{results*/}; dev/eval probes separated (dev was never used).
 
 \section{Results}
 
-Subject model: \texttt{Qwen/Qwen3.5-0.8B} (seed 0), run on a CPU x86 container (torch 2.13, transformers 5.15). Headline metrics in Table~\ref{tab:results}.
+Subject model: \texttt{Qwen/Qwen3.5-0.8B} (seed 0), CPU-only (torch 2.13, transformers 5.15). Headline metrics in Table~\ref{tab:results}.
 
 \begin{table}[h]
 \centering

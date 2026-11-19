@@ -35,13 +35,10 @@ building strong Swedish language models.
 
 ## Environment
 
-- Cluster `arrhenius` (NAISS). The GPU nodes are **ARM64**; the x86 login node can run the
-  experiment on CPU via an x86 Apptainer image (`pipeline-cpu.sif`, torch 2.13 + transformers 5.15).
-  A GPU path also exists (`slurm/run_experiment.slurm`, `qwen_inference.sif`) but was **not
-  validated** (the queue never scheduled it) — the CPU path below is the tested one.
-- Shared HF cache (Qwen3.5-0.8B already present):
-  `/nobackup/proj/disk/globalpoverty1/personal/satmur/hf_cache`.
+- Any Python env with `torch>=2.6` and `transformers>=5` (the `qwen3_5` architecture
+  needs torch>=2.6). We ran CPU-only; no GPU is required.
 - Editor API: Alibaba Model Studio "Token Plan", OpenAI-compatible.
+- (Cluster-specific notes on how we actually executed it are in `docs/03_decisions-log.md`.)
 
 ## Setup
 
@@ -50,25 +47,17 @@ export MODEL_STUDIO_API_KEY=...            # the token-plan key (never commit it
 export MODEL_STUDIO_BASE_URL="https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1"
 export WSP_EDITOR_MODEL=deepseek-v4-pro-0813
 
-# Build the pure-Python peft + pyyaml wheels for the CPU image (once):
+# Build the pure-Python peft + pyyaml wheels (once):
 bash scripts/setup_cpu_env.sh
 ```
 
-## Reproduce (CPU, login node)
-
-The heavy lifting uses an x86 Apptainer image that already ships torch>=2.6 + transformers
-(the `qwen3_5` architecture needs torch>=2.6, which newer transformers require). `peft` +
-`pyyaml` live as unpacked wheels under `.pip_cpu2/site` (see `scripts/setup_cpu_env.sh`).
+## Reproduce
 
 ```bash
-PTC=/nobackup/proj/disk/globalpoverty1/personal/audinet/SAE-scrubbing/apptainer/containers/pipeline-cpu.sif
-HF_CACHE=/nobackup/proj/disk/globalpoverty1/personal/satmur/hf_cache
-apptainer exec --home "$HF_CACHE" --env HF_HOME="$HF_CACHE" --env XDG_CACHE_HOME="$HF_CACHE" \
-  --env PYTHONPATH="$PWD/.pip_cpu2/site" --env OMP_NUM_THREADS=16 \
-  --bind "$HF_CACHE:/hf_cache" --bind "$PWD:$PWD" "$PTC" \
-  python3 -u src/run_all.py --model Qwen/Qwen3.5-0.8B \
+PYTHONPATH="$PWD/.pip_cpu2/site" python3 -u src/run_all.py \
+  --model Qwen/Qwen3.5-0.8B \
   --arms base,prompt,decode,logit_bias,random_edit,lora,wsp_zero \
-  --out results --cache-dir /hf_cache/hub --device cpu
+  --out results --cache-dir <your HF_HOME>/hub --device cpu
 ```
 
 The `wsp_zero` (vague) arm and the planted-fault repair also have standalone runners:

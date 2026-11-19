@@ -1,5 +1,7 @@
 # Weight-Space Programming for Swedish LMs: can a weight edit steer language, or only reweight output logits?
 
+**TL;DR.** We tested whether a frontier LLM editing an open model's weights directly (no gradients, no data) can improve Swedish on `Qwen/Qwen3.5-0.8B`. It cannot: the base model already answers Swedish perfectly, a zero-shot "improve Swedish" edit changed **0 parameters**, and a planted localized fault was *located* by the editor but not *repaired*. Meanwhile a small LoRA fine-tune made Swedish *worse* (English leakage, degenerate repeats). **Recommendation: do not prioritise WSP for SE.LLMA's capability goal**; its auditing value is no better than a row-norm statistic.
+
 ## 1. Critical examination of the source research
 
 The source ("Sparks of Weight-Space Programming", Takehi, Teoh, Zhang & Khattab, MIT CSAIL, 2026) reports that frontier LLMs can "read and write" neural network weights like code — **Weight-Space Programming (WSP)**. I assessed it before designing my experiment, focusing on the distinction the assignment highlights: *reasoning about weights directly* versus *optimising edits through repeated model feedback*.
@@ -43,7 +45,7 @@ A clean **negative** result (WSP ≈ logit steering) is itself valuable: it tell
 
 **Signals.** (1) *Grammar probes* (V2 word order + gender/definite agreement, 16 held-out items) scored by log-likelihood — a **weight-level** signal insensitive to decoding. (2) *Open-ended response-language* (8 Swedish prompts) scored by an offline Sv/En language-ID — a **surface** signal. (3) *English regression* (10 factual MCQs) for forgetting. The contrast between (1) and (2) is the key diagnostic: if a "WSP" gain shows up in (2) but not (1), it is decoding/logit-level, not a genuine weight edit.
 
-**Reproducibility.** Run on the cluster's x86 login node (CPU) inside an x86 Apptainer image (`pipeline-cpu.sif`: torch 2.13.0+cu130, transformers 5.15.1), model revision `2fc0636…`, seed 0, full editor transcripts dumped to `results*/`; dev/eval probes separated (dev was never used to select anything).
+**Reproducibility.** CPU-only (no GPU); torch 2.13.0, transformers 5.15.1; model revision `2fc0636…`; seed 0; full editor transcripts in `results*/`; dev/eval probes separated (dev was never used).
 
 ## 4. Results (Qwen3.5-0.8B, seed 0)
 
