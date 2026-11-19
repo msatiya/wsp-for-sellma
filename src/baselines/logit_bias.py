@@ -1,6 +1,6 @@
 from transformers.generation import LogitsProcessor
 
-from ..eval.language_id import SWEDISH_WORDS
+from eval.language_id import SWEDISH_WORDS
 
 _SWEDISH_CHARS = "åäöÅÄÖ"
 

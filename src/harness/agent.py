@@ -1,7 +1,7 @@
 import json
 import re
 
-from ..api_client import ChatClient
+from api_client import ChatClient
 
 CODE_BLOCK_RE = re.compile(r"```(?:python|py)?\s*\n(.*?)```", re.DOTALL)
 
