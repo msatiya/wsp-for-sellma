@@ -1,0 +1,907 @@
+{
+  "base": {
+    "eval": {
+      "grammar": {
+        "accuracy": 0.875,
+        "hits": 14,
+        "n": 16,
+        "results": [
+          {
+            "id": "v2-02",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -12.75,
+              -15.5,
+              -26.5
+            ]
+          },
+          {
+            "id": "v2-03",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -16.78125,
+              -17.78125,
+              -30.78125
+            ]
+          },
+          {
+            "id": "v2-05",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -11.5,
+              -12.25,
+              -20.25
+            ]
+          },
+          {
+            "id": "v2-06",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -15.375,
+              -16.375,
+              -22.875
+            ]
+          },
+          {
+            "id": "v2-08",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -35.125,
+              -38.125,
+              -39.375
+            ]
+          },
+          {
+            "id": "v2-09",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -25.25,
+              -19.0,
+              -31.5
+            ]
+          },
+          {
+            "id": "v2-11",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -23.25,
+              -30.0,
+              -35.5
+            ]
+          },
+          {
+            "id": "v2-12",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -4.9375,
+              -7.3125,
+              -10.5625
+            ]
+          },
+          {
+            "id": "agr-02",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -0.5,
+              -1.5
+            ]
+          },
+          {
+            "id": "agr-03",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -3.25,
+              -7.5
+            ]
+          },
+          {
+            "id": "agr-05",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -8.75,
+              -7.25
+            ]
+          },
+          {
+            "id": "agr-06",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -5.125,
+              -11.0
+            ]
+          },
+          {
+            "id": "agr-08",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -1.25,
+              -7.0
+            ]
+          },
+          {
+            "id": "agr-09",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -1.625,
+              -2.0,
+              -5.25
+            ]
+          },
+          {
+            "id": "agr-11",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -5.25,
+              -6.375,
+              -7.0
+            ]
+          },
+          {
+            "id": "agr-12",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -6.875,
+              -8.5
+            ]
+          }
+        ]
+      },
+      "openended": {
+        "swedish_ratio_mean": 1.0,
+        "label_counts": {
+          "sv": 8
+        },
+        "samples": [
+          {
+            "prompt": "Vad är huvudstaden i Sverige? Svara kort på svenska.",
+            "completion": "\n\n<think>\n\n</think>\n\nHuvudstaden i Sverige är Stockholm.",
+            "label": "sv"
+          },
+          {
+            "prompt": "Förklara på svenska vad en cykel är.",
+            "completion": "\n\n<think>\n\n</think>\n\nEn cykel är en cykel som är utrustad med en cykelstuga och en cykelstugans stugan. Den är en cykel som är utrustad med en cykelstuga och en cykelstugans stugan. Den är en",
+            "label": "sv"
+          },
+          {
+            "prompt": "Nämn tre svenska traditioner.",
+            "completion": "\n\n<think>\n\n</think>\n\nHär är tre svenska traditioner:\n\n1.  **Färgen på skivorna** – Skivorna i Sverige är ofta färgade med olika färger beroende på den som har gjort dem. De är vanligtvis färgade med blått",
+            "label": "sv"
+          },
+          {
+            "prompt": "Vad betyder ordet 'fika'? Svara på svenska.",
+            "completion": "\n\n<think>\n\n</think>\n\n\"Fika\" är ett svenskt ord som betyder \"lunch\" eller \"snack\". Det är ett korta ord som används ofta i vardagsläget för att beskriva en liten, ofta lättfattig eller lite smörkig måltid som man tar upp",
+            "label": "sv"
+          },
+          {
+            "prompt": "Beskriv vädret i Sverige på vintern på svenska.",
+            "completion": "\n\n<think>\n\n</think>\n\nVädret i Sverige på vintern är en komplex och varierande situation som beroende på vilken del av landet du är i och hur stor det är i Sverige. Här är en genomgång av de viktigaste faktorna:\n\n### 1. Världens största v",
+            "label": "sv"
+          },
+          {
+            "prompt": "Vem skrev Pippi Långstrump? Svara kort.",
+            "completion": "\n\n<think>\n\n</think>\n\nPippi Långstrump skrev av den svenska skådespelerns son, **Petter Långstrump**.",
+            "label": "sv"
+          },
+          {
+            "prompt": "Hur säger man 'thank you' på svenska?",
+            "completion": "\n\n<think>\n\n</think>\n\nDet är bra att du vill ha ett svar på detta.\n\nDet finns flera sätt att säga \"thank you\" på svenska, beroende på hur du vill uttrycka dig och hur formellt det ska ses. Här är de vanligaste och mest används:\n\n*   **Det",
+            "label": "sv"
+          },
+          {
+            "prompt": "Berätta kort på svenska vad Lucia är.",
+            "completion": "\n\n<think>\n\n</think>\n\nLucia är en svensk skådespelare och författare. Hon är mest känd för sin karriär som skådespelare, där hon spelar många av världens mest kända skådespelare. Hon har även skrivit flera böcker och film",
+            "label": "sv"
+          }
+        ]
+      },
+      "regression": {
+        "accuracy": 0.8,
+        "hits": 8,
+        "n": 10,
+        "results": [
+          {
+            "id": "en-01",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              1.875,
+              -0.625,
+              -1.875
+            ]
+          },
+          {
+            "id": "en-02",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -4.875,
+              -9.1875,
+              -10.3125
+            ]
+          },
+          {
+            "id": "en-03",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              3.5,
+              0.75,
+              2.875
+            ]
+          },
+          {
+            "id": "en-04",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              3.375,
+              -0.875,
+              -4.375
+            ]
+          },
+          {
+            "id": "en-05",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -1.375,
+              -2.375,
+              -4.0
+            ]
+          },
+          {
+            "id": "en-06",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -0.4375,
+              -5.1875,
+              -6.6875
+            ]
+          },
+          {
+            "id": "en-07",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              2.25,
+              2.125,
+              -1.875
+            ]
+          },
+          {
+            "id": "en-08",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -6.3125,
+              -10.8125,
+              -11.9375
+            ]
+          },
+          {
+            "id": "en-09",
+            "category": "english",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              2.75,
+              3.375,
+              -5.125
+            ]
+          },
+          {
+            "id": "en-10",
+            "category": "english",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -4.875,
+              -4.0,
+              -5.5
+            ]
+          }
+        ]
+      }
+    },
+    "meta": {}
+  },
+  "prompt": {
+    "openended": {
+      "swedish_ratio_mean": 1.0,
+      "label_counts": {
+        "sv": 8
+      },
+      "samples": [
+        {
+          "prompt": "Vad är huvudstaden i Sverige? Svara kort på svenska.",
+          "completion": "\n\nHuvudstaden i Sverige är **Stockholm**.",
+          "label": "sv"
+        },
+        {
+          "prompt": "Förklara på svenska vad en cykel är.",
+          "completion": "\n\n<think>\n\n</think>\n\nEn cykel är en cykel som är konstruerad för att användas på en gång för att transportera människor eller vatten. Den består av en cykel som är uppbyggt av en cykelbana, en cykelbana och en cykelbana.\n\n",
+          "label": "sv"
+        },
+        {
+          "prompt": "Nämn tre svenska traditioner.",
+          "completion": "\n\n<think>\n\n</think>\n\nHär är tre svenska traditioner:\n\n1. **Svansfärgning** – En traditionell ritual där man använder en svans för att göra en person eller ett objekt färgat med olika färger, ofta för att skapa en symbolisk bild eller för att",
+          "label": "sv"
+        },
+        {
+          "prompt": "Vad betyder ordet 'fika'? Svara på svenska.",
+          "completion": " Vad betyder ordet 'fika'?\n\n<think>\n\n</think>\n\n\"Fika\" är ett svenskt ord som betyder **snuffa**. Det är ett korta ord som används ofta i vardagsläget för att beskriva en kort och lugnare tid att gå ner i, ofta efter en lång",
+          "label": "sv"
+        },
+        {
+          "prompt": "Beskriv vädret i Sverige på vintern på svenska.",
+          "completion": "\n\n<think>\n\n</think>\n\nVädret i Sverige på vintern är mycket varierat och kännetecknas av en lång period av kallt, regnigt och snöigt väder.\n\nDet är viktigt att notera att vintern i Sverige är en **klimatisk period** där temperaturen",
+          "label": "sv"
+        },
+        {
+          "prompt": "Vem skrev Pippi Långstrump? Svara kort.",
+          "completion": "\n\n<think>\n\n</think>\n\nPippi Långstrump skrev av sig själv. Hon är en svensk barnbok som skrevs av den svenska barnboksklaren och författaren **Lena Lindberg**.",
+          "label": "sv"
+        },
+        {
+          "prompt": "Hur säger man 'thank you' på svenska?",
+          "completion": "\n\n<think>\n\n</think>\n\nSvara på svenska är att säga **tack**.\n\nDet är en vanlig och bra mening att säga \"tack\" när någon hjälper dig, hjälper dig med något eller gör dig glad. Det är också ett mycket bra sätt att säga \"tack\" när någon hjälper dig",
+          "label": "sv"
+        },
+        {
+          "prompt": "Berätta kort på svenska vad Lucia är.",
+          "completion": "\n\n<think>\n\n</think>\n\nLucia är en svensk skådespelare och teaterdirektör. Hon är mest känd för sin karriär som skådespelare, där hon har spelat många av världens mest kända skådespelare. Lucia är också en av de mest",
+          "label": "sv"
+        }
+      ]
+    }
+  },
+  "decode": {
+    "openended": {
+      "swedish_ratio_mean": 1.0,
+      "label_counts": {
+        "sv": 8
+      },
+      "samples": [
+        {
+          "prompt": "Vad är huvudstaden i Sverige? Svara kort på svenska.",
+          "completion": "\n\nHuvudstaden i Sverige är **Stockholm**.",
+          "label": "sv"
+        },
+        {
+          "prompt": "Förklara på svenska vad en cykel är.",
+          "completion": "\n\n<think>\n\n</think>\n\nEn cykel är ett utrustningsverktyg som används för att leda till en person eller ett objekt i en eller flera rutor. Den består av tre huvudsakliga delar:\n1.  **Kroppen** – som har en bakrena och",
+          "label": "sv"
+        },
+        {
+          "prompt": "Nämn tre svenska traditioner.",
+          "completion": "\n\n<think>\n\n</think>\n\nHär är tre svenska traditioner som kan vara färdiga:\n\n1.  **Färsken** (Kungliga festen) – En traditionell fest som syftar på att förlita sig på en nyfiken åldersgrupp. De by",
+          "label": "sv"
+        },
+        {
+          "prompt": "Vad betyder ordet 'fika'? Svara på svenska.",
+          "completion": "\n\n<think>\n\n</think>\n\n**Fika** betyder \"släkta\" eller \"fråga\" i svenska. Det är ett vanlig ord som används för att beskriva en kort, relaxande tid när en person eller grupp går på en promenad, i en kedja eller i en bar. Det",
+          "label": "sv"
+        },
+        {
+          "prompt": "Beskriv vädret i Sverige på vintern på svenska.",
+          "completion": "\n\n<think>:\nJag behöver beskriva vädret i Sverige på vintern, specifikt i Sverige.\nJag behöver bevara en korrekt språkbildning.\nJag behöver inte använda någon annan språk.\nJag behöver inte använda någon annan språk.\nJag behöver inte",
+          "label": "sv"
+        },
+        {
+          "prompt": "Vem skrev Pippi Långstrump? Svara kort.",
+          "completion": "\n\n<think>\n\n</think>\n\nPippi Långstrump skrev av Frank Söderberg. Han är en svensk skådespelare och författare som har skrivit flera böcker om barn och ungdom, bland annat *Pippi Långstrump* (1952).",
+          "label": "sv"
+        },
+        {
+          "prompt": "Hur säger man 'thank you' på svenska?",
+          "completion": "\n\n<think>\n\n</think>\n\nDet är en fin och mycket användarvänlig mening att fråga om det svenska språket.\n\nDet finns **så många sätt** att säga \"thank you\" på svenska att man inte kan svara med en enda mening, beroende på hur du vill skriva det,",
+          "label": "sv"
+        },
+        {
+          "prompt": "Berätta kort på svenska vad Lucia är.",
+          "completion": "\n\n<think>\n\n</think>\n\nLucia är en svensk författare som är känd för att skriva berättelser och noveller om livsväsendet. Hon har skrivit många böcker om familj, främjande av barn och unga, samt om olika roller och problem. Lucia är ofta inspirerad",
+          "label": "sv"
+        }
+      ]
+    }
+  },
+  "logit_bias": {
+    "openended": {
+      "swedish_ratio_mean": 1.0,
+      "label_counts": {
+        "sv": 8
+      },
+      "samples": [
+        {
+          "prompt": "Vad är huvudstaden i Sverige? Svara kort på svenska.",
+          "completion": " Vad har det att vara med om att inte vara en av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av",
+          "label": "sv"
+        },
+        {
+          "prompt": "Förklara på svenska vad en cykel är.",
+          "completion": " En av de viktigaste tillvaron som en av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de av de",
+          "label": "sv"
+        },
+        {
+          "prompt": "Nämn tre svenska traditioner.",
+          "completion": " Varav en av dessa kan vara en av de som har en mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket mycket",
+          "label": "sv"
+        },
+        {
+          "prompt": "Vad betyder ordet 'fika'? Svara på svenska.",
+          "completion": " Vad har det att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att vara med att",
+          "label": "sv"
+        },
+        {
+          "prompt": "Beskriv vädret i Sverige på vintern på svenska.",
+          "completion": " Vad ska jag kunna vara med om det inte var en av de de som har en av de de som har en av de som har en av de som har en av de som har en av de som har en av de som har en av de som har en av de som har en av de som har en av",
+          "label": "sv"
+        },
+        {
+          "prompt": "Vem skrev Pippi Långstrump? Svara kort.",
+          "completion": "\n\n<think>\n\n</think>\n\nEn av de mest tillförlitliga och varav som varav av de som varav av de som varav av de som varav av de som varav av de som varav av de som varav av de som varav av de som varav av de som",
+          "label": "sv"
+        },
+        {
+          "prompt": "Hur säger man 'thank you' på svenska?",
+          "completion": " Hur kan man det till en svensk och hur kan man det till en svensk och hur kan man det till en svensk och hur kan man det till en svensk och hur kan man det till en svensk och hur kan man det till en svensk och hur kan man det till en svensk och hur kan man det till en svensk och",
+          "label": "sv"
+        },
+        {
+          "prompt": "Berätta kort på svenska vad Lucia är.",
+          "completion": "\n\n<think>\n\n</think>\n\nDet kan vara en av de mycket av under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under de under",
+          "label": "sv"
+        }
+      ]
+    },
+    "meta": {
+      "n_bias_tokens": 41238
+    }
+  },
+  "random_edit": {
+    "error": "'int' object is not iterable"
+  },
+  "lora": {
+    "eval": {
+      "grammar": {
+        "accuracy": 0.6875,
+        "hits": 11,
+        "n": 16,
+        "results": [
+          {
+            "id": "v2-02",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -13.875,
+              -13.625,
+              -25.875
+            ]
+          },
+          {
+            "id": "v2-03",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -2.1875,
+              -8.875,
+              -28.875
+            ]
+          },
+          {
+            "id": "v2-05",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -6.0,
+              -9.75,
+              -17.75
+            ]
+          },
+          {
+            "id": "v2-06",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -18.125,
+              -15.875,
+              -24.875
+            ]
+          },
+          {
+            "id": "v2-08",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -19.75,
+              -30.0,
+              -33.5
+            ]
+          },
+          {
+            "id": "v2-09",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -19.5,
+              -15.75,
+              -27.25
+            ]
+          },
+          {
+            "id": "v2-11",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -20.375,
+              -22.875,
+              -33.875
+            ]
+          },
+          {
+            "id": "v2-12",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -6.375,
+              -8.375,
+              -12.375
+            ]
+          },
+          {
+            "id": "agr-02",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              7.25,
+              4.0
+            ]
+          },
+          {
+            "id": "agr-03",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              8.625,
+              1.0
+            ]
+          },
+          {
+            "id": "agr-05",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -7.75,
+              -1.0
+            ]
+          },
+          {
+            "id": "agr-06",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              2.0,
+              -10.0
+            ]
+          },
+          {
+            "id": "agr-08",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              4.125,
+              -7.375
+            ]
+          },
+          {
+            "id": "agr-09",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              6.5,
+              3.5,
+              -1.0
+            ]
+          },
+          {
+            "id": "agr-11",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -5.5,
+              -3.0,
+              -4.25
+            ]
+          },
+          {
+            "id": "agr-12",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -4.5,
+              -11.0
+            ]
+          }
+        ]
+      },
+      "openended": {
+        "swedish_ratio_mean": 0.75,
+        "label_counts": {
+          "sv": 6,
+          "en": 2
+        },
+        "samples": [
+          {
+            "prompt": "Vad är huvudstaden i Sverige? Svara kort på svenska.",
+            "completion": "\nSvar: Stockholm.\nVad är den tredje månaden? Svara kort på svenska.\nSvar: Mars.\nVad är den fjärde månaden? Svara kort på svenska.\nSvar: April.\nVad är den fjerde veckodag? S",
+            "label": "sv"
+          },
+          {
+            "prompt": "Förklara på svenska vad en cykel är.",
+            "completion": "\nSvar: Cykel.\nVårstid: Älgen.\nVårstid: Vår.\nVårstid: Vår.\nVårstid: Vår.\nVårstid: Vår.\nVårstid: Vår.\nV",
+            "label": "sv"
+          },
+          {
+            "prompt": "Nämn tre svenska traditioner.",
+            "completion": " Vad är varje?\nSvar: Fast, Vårskur, Älgen.\nVad äter man varje måndag?\nSvar: Gräs.\nVårstid kommer när?\nSvar: Älgen.\nHur många ben har en hund?\nSvar",
+            "label": "sv"
+          },
+          {
+            "prompt": "Vad betyder ordet 'fika'? Svara på svenska.",
+            "completion": "\nFika.\nVad betyder ordet 'tisdag'? Svara på svenska.\nTisdag.\nVad betyder ordet 'månad'? Svara på svenska.\nMånad.\nVad betyder ordet 'tisdag'? Svara på svenska.\nT",
+            "label": "sv"
+          },
+          {
+            "prompt": "Beskriv vädret i Sverige på vintern på svenska.",
+            "completion": "\nVår.\nLiten.\nVår.\nLiten.\nMån.\nTisd.\nTres.\nTis.\nTors.\nFred.\nJag.\nLägen.\nTisd.\nTisd.\nTisd.\nTisd.",
+            "label": "sv"
+          },
+          {
+            "prompt": "Vem skrev Pippi Långstrump? Svara kort.",
+            "completion": "\nA. Hans Christian Andersen.\nB. Oscar Wilde.\nC. Jane Austen.\nD. Charles Dickens.\nE. William Shakespeare.\nF. Leo Tolstoy.\nG. Mark Twain.\nH. Gustav Adolphus.\nI. Jean-Paul Sartre",
+            "label": "en"
+          },
+          {
+            "prompt": "Hur säger man 'thank you' på svenska?",
+            "completion": "\nA. Tack.\nB. Tja.\nC. Tja.\nD. Tja.\nE. Tja.\nF. Tja.\nG. Tja.\nH. Tja.\nI. Tja.\nJ. Tja.\nK. T",
+            "label": "en"
+          },
+          {
+            "prompt": "Berätta kort på svenska vad Lucia är.",
+            "completion": "\nSvar: Lucia.\nÄr hon en hund?\nSvar: Nej.\nHur kallas hon?\nSvar: Lucia.\n Vad gör hon varje måndag?\nSvar: Älgen.\n Vad gör hon vardagligen?\nSvar: Liten.\n",
+            "label": "sv"
+          }
+        ]
+      },
+      "regression": {
+        "accuracy": 0.9,
+        "hits": 9,
+        "n": 10,
+        "results": [
+          {
+            "id": "en-01",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              7.6875,
+              3.625,
+              1.125
+            ]
+          },
+          {
+            "id": "en-02",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -4.75,
+              -13.25,
+              -13.625
+            ]
+          },
+          {
+            "id": "en-03",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              8.625,
+              5.0,
+              6.25
+            ]
+          },
+          {
+            "id": "en-04",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              6.9375,
+              2.875,
+              -3.375
+            ]
+          },
+          {
+            "id": "en-05",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              2.0,
+              -2.625,
+              -1.125
+            ]
+          },
+          {
+            "id": "en-06",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -0.125,
+              -9.5,
+              -9.75
+            ]
+          },
+          {
+            "id": "en-07",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              6.625,
+              6.0,
+              3.625
+            ]
+          },
+          {
+            "id": "en-08",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -6.5625,
+              -14.1875,
+              -14.5625
+            ]
+          },
+          {
+            "id": "en-09",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              9.625,
+              8.875,
+              -1.25
+            ]
+          },
+          {
+            "id": "en-10",
+            "category": "english",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -3.5,
+              -3.125,
+              -8.0
+            ]
+          }
+        ]
+      }
+    },
+    "meta": {
+      "n_lora_params": 5411328
+    }
+  }
+}

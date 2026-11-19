@@ -1,0 +1,378 @@
+{
+  "random_edit": {
+    "eval": {
+      "grammar": {
+        "accuracy": 0.875,
+        "hits": 14,
+        "n": 16,
+        "results": [
+          {
+            "id": "v2-02",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -13.0,
+              -16.75,
+              -26.875
+            ]
+          },
+          {
+            "id": "v2-03",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -16.96875,
+              -18.59375,
+              -30.84375
+            ]
+          },
+          {
+            "id": "v2-05",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -11.875,
+              -12.375,
+              -20.125
+            ]
+          },
+          {
+            "id": "v2-06",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -15.0,
+              -15.75,
+              -22.5
+            ]
+          },
+          {
+            "id": "v2-08",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -35.25,
+              -38.75,
+              -39.25
+            ]
+          },
+          {
+            "id": "v2-09",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -25.25,
+              -19.25,
+              -31.75
+            ]
+          },
+          {
+            "id": "v2-11",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -23.875,
+              -29.625,
+              -36.375
+            ]
+          },
+          {
+            "id": "v2-12",
+            "category": "v2",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -5.0,
+              -7.0,
+              -10.375
+            ]
+          },
+          {
+            "id": "agr-02",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -0.625,
+              -1.5
+            ]
+          },
+          {
+            "id": "agr-03",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -2.75,
+              -7.25
+            ]
+          },
+          {
+            "id": "agr-05",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -8.875,
+              -7.125
+            ]
+          },
+          {
+            "id": "agr-06",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -4.75,
+              -10.5
+            ]
+          },
+          {
+            "id": "agr-08",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -1.25,
+              -7.375
+            ]
+          },
+          {
+            "id": "agr-09",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -1.625,
+              -2.125,
+              -5.125
+            ]
+          },
+          {
+            "id": "agr-11",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -5.375,
+              -6.125,
+              -7.0
+            ]
+          },
+          {
+            "id": "agr-12",
+            "category": "agreement",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -7.375,
+              -9.125
+            ]
+          }
+        ]
+      },
+      "openended": {
+        "swedish_ratio_mean": 1.0,
+        "label_counts": {
+          "sv": 8
+        },
+        "samples": [
+          {
+            "prompt": "Vad är huvudstaden i Sverige? Svara kort på svenska.",
+            "completion": "\n\n<think>\n\n</think>\n\nHuvudstaden i Sverige är Stockholm.",
+            "label": "sv"
+          },
+          {
+            "prompt": "Förklara på svenska vad en cykel är.",
+            "completion": "\n\n<think>\n\n</think>\n\nEn cykel är en cykel som är utrustad med en cykelstuga och en cykelstuga.\n\nDet är en cykel som är utrustad med en cykelstuga och en cykelstuga.\n\nDet är en cykel som är utrust",
+            "label": "sv"
+          },
+          {
+            "prompt": "Nämn tre svenska traditioner.",
+            "completion": "\n\n<think>\n\n</think>\n\nHär är tre svenska traditioner som är mycket kända och har en stor historia:\n\n1.  **Svenska Kungliga Tjänsten (SKT)**\n    Detta är den mest kända svenska traditionen. Den är en av de tre stora svenska traditionerna och",
+            "label": "sv"
+          },
+          {
+            "prompt": "Vad betyder ordet 'fika'? Svara på svenska.",
+            "completion": "\n\n<think>\n\n</think>\n\n\"Fika\" betyder \"söndag\" i svenska. Det är ett ord som används för att beskriva en dag som är mycket lugn och avslappnad, ofta med en liten snack eller en promenad. Det är också ett mycket populärt namn för att beskr",
+            "label": "sv"
+          },
+          {
+            "prompt": "Beskriv vädret i Sverige på vintern på svenska.",
+            "completion": "\n\n<think>\n\n</think>\n\nVädret i Sverige på vintern är en komplex och varierande situation som beroende på vilken del av landet du är i och hur stor det är i Sverige. Här är en genomgång av de huvudsakliga vädretyperna, deras varaktighet och hur de",
+            "label": "sv"
+          },
+          {
+            "prompt": "Vem skrev Pippi Långstrump? Svara kort.",
+            "completion": "\n\n<think>\n\n</think>\n\nPippi Långstrump skrev av den svenska skådespelaren **Lars Nilsson**.",
+            "label": "sv"
+          },
+          {
+            "prompt": "Hur säger man 'thank you' på svenska?",
+            "completion": "\n\n<think>\n\n</think>\n\nDet är bra att du vill ha ett svar på det.\n\nDet är **tack** på svenska.\n\nDet är också **tack** på engelska.\n\nDet är **tack** på svenska.\n\nDet är **tack** på svenska.\n\nDet är **",
+            "label": "sv"
+          },
+          {
+            "prompt": "Berätta kort på svenska vad Lucia är.",
+            "completion": "\n\n<think>\n\n</think>\n\nLucia är en svensk skådespelare och författare som har spelat en stor roll i många filmer och TV-serier. Hon är mest känd för sin karriär som skådespelare, där hon har spelat många av världens mest kända sk",
+            "label": "sv"
+          }
+        ]
+      },
+      "regression": {
+        "accuracy": 0.7,
+        "hits": 7,
+        "n": 10,
+        "results": [
+          {
+            "id": "en-01",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              1.25,
+              -1.25,
+              -2.5
+            ]
+          },
+          {
+            "id": "en-02",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -4.875,
+              -9.8125,
+              -10.6875
+            ]
+          },
+          {
+            "id": "en-03",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              3.25,
+              0.75,
+              3.0
+            ]
+          },
+          {
+            "id": "en-04",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              3.375,
+              -0.875,
+              -4.5
+            ]
+          },
+          {
+            "id": "en-05",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -1.625,
+              -2.875,
+              -4.125
+            ]
+          },
+          {
+            "id": "en-06",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -0.5,
+              -5.5,
+              -6.75
+            ]
+          },
+          {
+            "id": "en-07",
+            "category": "english",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              1.75,
+              1.875,
+              -2.625
+            ]
+          },
+          {
+            "id": "en-08",
+            "category": "english",
+            "correct": 0,
+            "predicted": 0,
+            "hit": true,
+            "scores": [
+              -7.75,
+              -12.125,
+              -13.0
+            ]
+          },
+          {
+            "id": "en-09",
+            "category": "english",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              2.375,
+              3.125,
+              -5.25
+            ]
+          },
+          {
+            "id": "en-10",
+            "category": "english",
+            "correct": 0,
+            "predicted": 1,
+            "hit": false,
+            "scores": [
+              -5.125,
+              -4.625,
+              -6.0
+            ]
+          }
+        ]
+      }
+    },
+    "meta": {
+      "frac": 0.0002,
+      "sigma": 1.0
+    }
+  }
+}

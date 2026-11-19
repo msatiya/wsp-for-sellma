@@ -1,0 +1,7 @@
+{
+  "changed": {
+    "model.layers.5.mlp.down_proj.weight": 229376
+  },
+  "changed_params": 229376,
+  "total_params": 752393024
+}
