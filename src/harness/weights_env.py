@@ -11,6 +11,7 @@ class WeightsEnv:
 
         self.model_id = model_id
         self.tokenizer = AutoTokenizer.from_pretrained(model_id, cache_dir=cache_dir)
+        self.tokenizer.padding_side = "left"
         self.model = AutoModelForCausalLM.from_pretrained(
             model_id,
             cache_dir=cache_dir,

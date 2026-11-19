@@ -7,7 +7,7 @@ _SWEDISH_CHARS = "åäöÅÄÖ"
 
 def swedish_token_ids(tokenizer):
     ids = set()
-    for tok_id, tok in tokenizer.get_vocab().items():
+    for tok, tok_id in tokenizer.get_vocab().items():
         s = tok.lstrip("Ġ▁").lower()
         if any(c in tok for c in _SWEDISH_CHARS) or s in SWEDISH_WORDS:
             ids.add(int(tok_id))
