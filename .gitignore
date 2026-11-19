@@ -31,3 +31,5 @@ scratch/
 # OS / editor
 .DS_Store
 *.swp
+# SLURM transient logs
+logs/
