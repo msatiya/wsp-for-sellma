@@ -2,7 +2,7 @@
 
 **Short answer: I couldn't show that it can, and I found a good reason to be cautious.** The small model I tested already answers in Swedish, so there was nothing obvious to fix. Asked to "improve Swedish" with no examples and no chance to test its changes, the editing model changed nothing at all. When I deliberately broke a specific part of the network, it found the broken part exactly — but its repair didn't fix the behavior. My advice: don't put engineering time into this yet. One cheap test would tell us whether it's worth revisiting.
 
-## What the original work shows, and what it doesn't
+## What the original work shows
 
 The source report (Takehi, Teoh, Zhang and Khattab, MIT, November 2026) asks a frontier model to read and write another network's weights the way a programmer reads code. Two things in it are easy to conflate, and keeping them apart matters for us.
 
