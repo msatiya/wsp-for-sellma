@@ -1,21 +1,24 @@
 # AI usage
 
-This work was carried out with an interactive coding agent (opencode, running on
-`deepseek-v4-pro-0813`) and a frontier "editor" LLM (`deepseek-v4-pro-0813` via
-Alibaba Cloud Model Studio) used **inside** the experiment itself.
+Two kinds of tooling were used, with clearly separated roles.
 
-- **opencode / deepseek-v4-pro-0813 (assistant)**: digested the assignment PDF and the
-  *Sparks of Weight-Space Programming* source; proposed and implemented this repository's
-  experiment (hypothesis, arms, controls, harness, evaluation, baselines, orchestration,
-  probes), and drafted the research note, report and docs. The human author set the
-  direction at each decision point (hypothesis, model choice, experiment framing),
-  supplied compute/API access, and reviewed/approved the Swedish probes and all claims.
-- **Frontier editor `deepseek-v4-pro-0813` (Model Studio token plan)**: used as the
-  Weight-Space Programming "editor" in the `wsp_zero` and planted-fault arms — i.e. it is
-  the *subject* being evaluated inside the experiment, not the author.
-- Human author: chose the hypothesis and conscious scope (e.g. dropping GPT-SW3 after HF
-  gating), reviewed the Swedish grammar probes, and approved the final conclusions and
-  recommendation.
+**Coding assistant (opencode, running on `deepseek-v4-pro-0813`):** an execution-level
+assistant. It read the assignment and the *Sparks of Weight-Space Programming* source,
+implemented the code (harness, evaluation, baselines, orchestration), ran the experiment,
+and drafted the Markdown/LaTeX documents. Every research decision was made by the human
+author, who directed the assistant throughout.
+
+**Frontier editor `deepseek-v4-pro-0813` (Model Studio token plan):** used *inside* the
+experiment as the Weight-Space Programming "editor" in the `wsp_zero` and planted-fault
+arms — i.e. it is the *subject* being evaluated, not an author.
+
+**Human author — all conceptual and directive decisions:** chose the hypothesis and its
+framing, selected the subject model and the Weight-Space Programming editor, defined the
+experimental arms and controls, designed and reviewed the Swedish grammar probes, set the
+scope (e.g. dropping GPT-SW3 after Hugging Face access could not be obtained before the
+deadline), decided how to handle negative results and small-sample uncertainty,
+interpreted the findings, and wrote the recommendation. The assistant's outputs were
+reviewed and revised against these decisions throughout.
 
 No model weights or data were generated that we are not entitled to use; the subject
 model (Qwen3.5-0.8B) is open-weight, and the Swedish probes are synthetic/author-written.
