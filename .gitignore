@@ -35,3 +35,9 @@ scratch/
 logs/
 .pip_user/
 .peft/
+
+# LaTeX build artifacts
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
