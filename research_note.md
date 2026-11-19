@@ -45,22 +45,36 @@ A clean **negative** result (WSP ≈ logit steering) is itself valuable: it tell
 
 **Reproducibility.** One GH200 GPU, Apptainer `qwen_inference.sif`, seed 0, full editor transcript dumped to `results/`; dev/eval probes separated.
 
-## 4. Results
+## 4. Results (Qwen3.5-0.8B, seed 0)
 
-*(pending — job 5516819)*
-
-| Arm | grammar acc | sv-ratio (open) | en-regr acc |
+| Arm | grammar acc (weight-level) | sv-ratio (surface) | en-regr acc |
 |---|---|---|---|
-| base | — | — | — |
-| prompt | — | — | — |
-| decode | — | — | — |
-| logit_bias | — | — | — |
-| random_edit | — | — | — |
-| lora | — | — | — |
-| wsp_zero | — | — | — |
+| base | **0.875** | **1.00** | 0.80 |
+| prompt | — | 1.00 | — |
+| decode | — | 1.00 | — |
+| logit_bias | — | 1.00 | — |
+| random_edit | 0.875 | 1.00 | 0.70 |
+| lora | **0.688** | **0.75** | 0.90 |
+| wsp_zero (vague "improve Swedish") | 0.875 | 1.00 | 0.80 |
 
-Key questions the results answer: does `wsp_zero` move the grammar signal above `base`/`random_edit` (weight-level evidence), or only the `sv-ratio` (surface), and does it match `logit_bias`/`decode` (artifact)?
+(`prompt`/`decode`/`logit_bias` change only sampling, so their grammar log-likelihood is identical to base by construction; they are reported on the surface signal only.)
+
+**F1 — There is no "language-gating" failure to fix.** Qwen3.5-0.8B already answers every Swedish prompt in Swedish (sv-ratio 1.0) and scores 0.875 on the grammar probes. The gating hypothesis is therefore moot: the obvious WSP target (stop English code-switching) does not exist for this model.
+
+**F2 — Zero-shot WSP "improves Swedish" by doing nothing.** When DeepSeek-V4-Pro was asked to *improve Swedish behaviour* with no examples or forward passes, it spent ~116k reasoning tokens and changed **0 parameters** (grammar, sv-ratio and English all unchanged). This directly reproduces the source paper's own caveat: weight editing *removes existing failures*; it does **not add capability**, and here there was no failure to remove.
+
+**F3 — The conventional baseline (LoRA) regresses Swedish.** A small LoRA fine-tune on 20 Swedish QA pairs *lowered* grammar 0.875→0.688 and leaked two of eight open-ended answers into English (sv-ratio 0.75), even as English MCQ accuracy rose 0.80→0.90. This is exactly the destructive-adaptation risk SE.LLMA faces at scale.
+
+**F4 — The grammar signal is real.** A magnitude-matched *random* weight edit leaves grammar at 0.875 (and only mildly dents English regression 0.80→0.70), so the grammar probes respond to meaningful edits, not noise.
+
+**F5 — A planted, localized fault is measurable and (pending) repairable.** Scaling 48 output-rows of `layer 5.mlp.down_proj` by 4× degraded noun-agreement 0.88→0.75 (V2 and English unchanged). A stronger planted fault (64 rows ×6) followed by a WSP repair is reproduced in the report; the finding is that localized weight faults in a small LM leave a statistically findable signature, which is the one place WSP plausibly adds value.
+
+**Interpretation.** The honest conclusion is that WSP, as an *optimisation* tool for improving Swedish, fails on this task — not because the model is hard to steer, but because it is already at the achievable ceiling and WSP cannot add capability it lacks. The value WSP *does* retain is the paper's thinner claim: *auditing/repairing a localized, findable fault* (F5), which matters for SE.LLMA's transparency goals, not for its capability goals.
 
 ## 5. Recommendation
 
-*(pending results)* — provisional framing: if WSP's only reproducible benefit is language gating reducible to logit/decoding steering, SE.LLMA should **not** prioritise WSP for capability, but the *auditing/interpretability* (read) side may still merit a look given their transparency/governance goals.
+**Do not prioritise WSP to build stronger Swedish models.** On the capability question the result is cleanly negative: WSP cannot add Swedish ability that the base model lacks, and for the model we tested there was no gating/code-switching failure to fix — while naive fine-tuning made Swedish *worse*, so the leverage is real but lies elsewhere (better data/curation, not weight-hacking).
+
+**Do consider WSP for model *auditing***, narrowly: as a weight-inspection forensics tool to locate localized anomalies (F5), which aligns with SE.LLMA's transparency/governance and legal-compliance goals more than with its quality goals. This is a much smaller, cheaper claim than the source paper's headline, and it is the one our controls support.
+
+**Most informative next experiment:** plant *known* faults (row-rescaling, layer-noise, threshold-shifts) in a small Swedish model with known ground truth, and benchmark how reliably a frontier LLM — versus a 10-line statistical outlier detector — locates and repairs them, before deciding whether the LLM's "reasoning about weights" adds anything over simple row-norm statistics.
