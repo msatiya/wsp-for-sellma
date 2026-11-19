@@ -33,3 +33,5 @@ scratch/
 *.swp
 # SLURM transient logs
 logs/
+.pip_user/
+.peft/
