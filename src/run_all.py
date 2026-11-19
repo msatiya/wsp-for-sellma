@@ -123,66 +123,77 @@ def main():
 
     base_model, base_tok = load_model(args.model, args.cache_dir, args.device)
 
+    import traceback
+
     for arm in arms:
         print(f"== {arm} ==", flush=True)
-        meta = {}
-        if arm == "base":
-            model, tok = base_model, base_tok
-        elif arm == "prompt":
-            model, tok = base_model, base_tok
-            res = run_openended(model, tok, args.device, prefix="Svara på svenska. ")
-            results[arm] = {"openended": res}
-            continue
-        elif arm == "decode":
-            model, tok = base_model, base_tok
-            res = run_openended(model, tok, args.device, do_sample=True)
-            results[arm] = {"openended": res}
-            continue
-        elif arm == "logit_bias":
-            from baselines.logit_bias import swedish_token_ids, TokenBiasProcessor
+        try:
+            meta = {}
+            if arm == "base":
+                model, tok = base_model, base_tok
+                results[arm] = {"eval": eval_model(model, tok, args.device), "meta": meta}
+            elif arm == "prompt":
+                model, tok = base_model, base_tok
+                res = run_openended(model, tok, args.device, prefix="Svara på svenska. ")
+                results[arm] = {"openended": res}
+            elif arm == "decode":
+                model, tok = base_model, base_tok
+                res = run_openended(model, tok, args.device, do_sample=True)
+                results[arm] = {"openended": res}
+            elif arm == "logit_bias":
+                from baselines.logit_bias import swedish_token_ids, TokenBiasProcessor
 
-            model, tok = base_model, base_tok
-            ids = swedish_token_ids(tok)
-            proc = TokenBiasProcessor(ids, 5.0)
-            res = run_openended(model, tok, args.device, logits_processor=[proc])
-            meta = {"n_bias_tokens": len(ids)}
-            results[arm] = {"openended": res, "meta": meta}
-            continue
-        elif arm == "random_edit":
-            from baselines.random_edit import random_edit
+                model, tok = base_model, base_tok
+                ids = swedish_token_ids(tok)
+                proc = TokenBiasProcessor(ids, 5.0)
+                res = run_openended(model, tok, args.device, logits_processor=[proc])
+                results[arm] = {"openended": res, "meta": {"n_bias_tokens": len(ids)}}
+            elif arm == "random_edit":
+                from baselines.random_edit import random_edit
 
-            model, tok = load_model(args.model, args.cache_dir, args.device)
-            random_edit(model, frac=0.0002, sigma=1.0, seed=args.seed)
-            meta = {"frac": 0.0002, "sigma": 1.0}
-        elif arm == "lora":
-            from baselines.lora import lora_finetune
-            from baselines.swedish_examples import as_prompt_completion_pairs
+                model, tok = load_model(args.model, args.cache_dir, args.device)
+                random_edit(model, frac=0.0002, sigma=1.0, seed=args.seed)
+                results[arm] = {
+                    "eval": eval_model(model, tok, args.device),
+                    "meta": {"frac": 0.0002, "sigma": 1.0},
+                }
+            elif arm == "lora":
+                from baselines.lora import lora_finetune
+                from baselines.swedish_examples import as_prompt_completion_pairs
 
-            model, tok = load_model(args.model, args.cache_dir, args.device)
-            out = lora_finetune(model, tok, as_prompt_completion_pairs())
-            model = out["model"]
-            meta = {"n_lora_params": out["n_lora_params"]}
-        elif arm in ("wsp_zero", "wsp_feedback"):
-            model, tok, wsp = run_wsp_arm(
-                args.model,
-                args.cache_dir,
-                args.device,
-                allow_forward=(arm == "wsp_feedback"),
-                api_cfg=cfg.api,
-                out_dir=out_dir / arm,
-                max_iters=args.wsp_max_iters,
-            )
-            meta = {
-                "diff": wsp["diff"],
-                "tokens": wsp["total_tokens"],
-                "final": wsp["final"],
-            }
-        else:
-            raise ValueError(arm)
-        results[arm] = {"eval": eval_model(model, tok, args.device), "meta": meta}
-
-    with open(out_dir / "results.json", "w") as f:
-        json.dump(results, f, indent=2, ensure_ascii=False)
+                model, tok = load_model(args.model, args.cache_dir, args.device)
+                out = lora_finetune(model, tok, as_prompt_completion_pairs())
+                model = out["model"]
+                results[arm] = {
+                    "eval": eval_model(model, tok, args.device),
+                    "meta": {"n_lora_params": out["n_lora_params"]},
+                }
+            elif arm in ("wsp_zero", "wsp_feedback"):
+                model, tok, wsp = run_wsp_arm(
+                    args.model,
+                    args.cache_dir,
+                    args.device,
+                    allow_forward=(arm == "wsp_feedback"),
+                    api_cfg=cfg.api,
+                    out_dir=out_dir / arm,
+                    max_iters=args.wsp_max_iters,
+                )
+                results[arm] = {
+                    "eval": eval_model(model, tok, args.device),
+                    "meta": {
+                        "diff": wsp["diff"],
+                        "tokens": wsp["total_tokens"],
+                        "final": wsp["final"],
+                    },
+                }
+            else:
+                raise ValueError(arm)
+        except Exception as e:
+            print(f"ERROR in arm {arm}: {e}", flush=True)
+            traceback.print_exc()
+            results[arm] = {"error": str(e)}
+        with open(out_dir / "results.json", "w") as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
 
     print("\n===== SUMMARY =====")
     for arm, r in results.items():
