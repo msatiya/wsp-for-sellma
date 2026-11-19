@@ -43,3 +43,4 @@ report/*.out
 report/*.toc
 .pip_cpu/
 .venv_cpu/
+.pip_cpu2/
