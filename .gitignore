@@ -41,3 +41,5 @@ report/*.aux
 report/*.log
 report/*.out
 report/*.toc
+.pip_cpu/
+.venv_cpu/
