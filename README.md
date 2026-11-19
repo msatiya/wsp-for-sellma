@@ -6,6 +6,11 @@ building strong Swedish language models.
 
 - [`docs/01_assignment-and-research-digest.md`](docs/01_assignment-and-research-digest.md) — assignment, paper digest + critique, SE.LLMA context, environment.
 - [`docs/02_experiment-plan.md`](docs/02_experiment-plan.md) — hypothesis, arms, signals, repo layout.
+- [`docs/03_decisions-log.md`](docs/03_decisions-log.md) — adaptations & constraints during the run.
+- [`research_note.md`](research_note.md) — the 1–2 page research note (hypothesis, results, recommendation).
+- [`report/report.pdf`](report/report.pdf) — the longer PDF report.
+- [`results/README.md`](results/README.md) — headline numbers and pointers to raw artifacts.
+- [`ai_usage.md`](ai_usage.md) — AI tools used and their contributions.
 
 ## Hypothesis (narrow, testable)
 
@@ -30,8 +35,9 @@ building strong Swedish language models.
 
 ## Environment
 
-- Cluster `arrhenius` (NAISS). GPU nodes are **ARM64**; use the `qwen_inference.sif`
-  Apptainer container on compute nodes (see `slurm/run_experiment.slurm`).
+- Cluster `arrhenius` (NAISS). The GPU nodes are **ARM64**; the x86 login node can run the
+  experiment on CPU via an x86 Apptainer image (`pipeline-cpu.sif`, torch 2.13 + transformers 5.15).
+  A GPU path also exists (`slurm/run_experiment.slurm`, `qwen_inference.sif`), but CPU sufficed.
 - Shared HF cache (Qwen3.5-0.8B already present):
   `/nobackup/proj/disk/globalpoverty1/personal/satmur/hf_cache`.
 - Editor API: Alibaba Model Studio "Token Plan", OpenAI-compatible.
@@ -39,23 +45,28 @@ building strong Swedish language models.
 ## Setup
 
 ```bash
-# API credentials (never commit `.env`)
-cp .env.example .env   # then fill in MODEL_STUDIO_API_KEY
-export $(grep -v '^#' .env | xargs)
+export MODEL_STUDIO_API_KEY=...            # the token-plan key (never commit it)
+export MODEL_STUDIO_BASE_URL="https://token-plan.ap-southeast-1.maas.aliyuncs.com/compatible-mode/v1"
+export WSP_EDITOR_MODEL=deepseek-v4-pro-0813
 ```
 
-## Reproduce
+## Reproduce (CPU, login node)
 
-Prepare (and, on approval, submit) the SLURM job:
+The heavy lifting uses an x86 Apptainer image; `peft` is provided as unpacked wheels under
+`.pip_cpu2/site` (see `docs/03_decisions-log.md`; build with the PyPI URLs listed there).
 
 ```bash
-export MODEL=Qwen/Qwen3.5-0.8B
-export ARMS=base,prompt,decode,logit_bias,random_edit,lora,wsp_zero
-sbatch slurm/run_experiment.slurm
+PTC=/nobackup/proj/disk/globalpoverty1/personal/audinet/SAE-scrubbing/apptainer/containers/pipeline-cpu.sif
+HF_CACHE=/nobackup/proj/disk/globalpoverty1/personal/satmur/hf_cache
+apptainer exec --home "$HF_CACHE" --env HF_HOME="$HF_CACHE" --env XDG_CACHE_HOME="$HF_CACHE" \
+  --env PYTHONPATH="$PWD/.pip_cpu2/site" --env OMP_NUM_THREADS=16 \
+  --bind "$HF_CACHE:/hf_cache" --bind "$PWD:$PWD" "$PTC" \
+  python3 -u src/run_all.py --model Qwen/Qwen3.5-0.8B \
+  --arms base,prompt,decode,logit_bias,random_edit,lora,wsp_zero \
+  --out results --cache-dir /hf_cache/hub --device cpu
 ```
 
-Results land in `results/<model>/results.json`; editor transcripts in
-`results/<model>/wsp_zero/wsp_transcript.json`.
+Results land under `results*`/; see `results/README.md`.
 
 ## Layout
 
