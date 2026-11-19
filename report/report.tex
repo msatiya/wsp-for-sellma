@@ -73,7 +73,7 @@ Arm & What it does & Controls for \\
 
 \textbf{Signals.} (1) \emph{Grammar probes} (V2 word order + gender/definite agreement, 16 held-out items) scored by log-likelihood --- a \emph{weight-level} signal insensitive to decoding. (2) \emph{Open-ended response-language} (8 Swedish prompts) scored by an offline Sv/En language-ID --- a \emph{surface} signal. (3) \emph{English regression} (10 factual MCQs) for forgetting. The contrast between (1) and (2) is the key diagnostic: a gain appearing in (2) but not (1) indicates a decoding/logit-level effect, not a genuine weight edit.
 
-\textbf{Reproducibility.} One GH200 GPU, Apptainer \texttt{qwen\_inference.sif}, seed 0, full editor transcript dumped to \texttt{results/}; dev/eval probes separated.
+\textbf{Reproducibility.} Run on the cluster's x86 login node (CPU) inside an x86 Apptainer image (\texttt{pipeline-cpu.sif}: torch 2.13.0+cu130, transformers 5.15.1), model revision \texttt{2fc0636\ldots}, seed 0, full editor transcripts dumped to \texttt{results*/}; dev/eval probes separated (dev was never used).
 
 \section{Results}
 
@@ -87,26 +87,35 @@ Subject model: \texttt{Qwen/Qwen3.5-0.8B} (seed 0), run on a CPU x86 container (
 \toprule
 Arm & grammar acc & sv-ratio (open) & en-regr acc \\
 \midrule
-base & 0.875 & 1.00 & 0.80 \\
+base & 0.875 (14/16) & 1.00 (8/8) & 0.80 (8/10) \\
 prompt & --- & 1.00 & --- \\
 decode & --- & 1.00 & --- \\
 logit\_bias & --- & 1.00 & --- \\
-random\_edit & 0.875 & 1.00 & 0.70 \\
-lora & 0.688 & 0.75 & 0.90 \\
+random\_edit & 0.875 & 1.00 & 0.70 (7/10) \\
+lora & 0.688 (11/16) & 0.75 (6/8) & 0.90 (9/10) \\
 wsp\_zero (vague) & 0.875 & 1.00 & 0.80 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{itemize}
-\item \textbf{F1 --- no gating failure exists.} Qwen3.5-0.8B already answers every Swedish prompt in Swedish (sv-ratio 1.0) and scores 0.875 on the grammar probes. The obvious WSP target --- stopping English code-switching --- is already solved.
-\item \textbf{F2 --- zero-shot WSP ``improves Swedish'' by doing nothing.} Asked to improve Swedish with no examples or forward passes, DeepSeek-V4-Pro spent $\sim$116k reasoning tokens and changed \textbf{0 parameters}; grammar, language and English were all unchanged. This reproduces the source paper's own caveat that weight editing \emph{removes} failures but cannot \emph{add} capability.
-\item \textbf{F3 --- the conventional baseline regresses Swedish.} A small LoRA fine-tune on 20 Swedish QA pairs \emph{lowered} grammar 0.875$\rightarrow$0.688 and leaked 2/8 open-ended answers into English (sv-ratio 0.75), while English MCQ rose 0.80$\rightarrow$0.90 --- the exact destructive-adaptation risk SE.LLMA faces at scale.
-\item \textbf{F4 --- the grammar signal is real.} A magnitude-matched random edit leaves grammar at 0.875 (only mildly denting English 0.80$\rightarrow$0.70), so the probes respond to meaningful edits, not noise.
-\item \textbf{F5 --- a localized planted fault is measurable; WSP locates but does not repair it.} Scaling 48 output-rows of layer 5 \texttt{mlp.down\_proj} by $4\times$ degraded noun-agreement 0.88$\rightarrow$0.75; scaling 64 rows by $6\times$ degraded V2 0.88$\rightarrow$0.75 (English and the other behaviour stayed intact), so the faults were clear and localized. Given the corrupted weights, the agent identified the right tensor and edited exactly those 64 rows (229{,}376 params, in \texttt{down\_proj} only) --- but its repair left V2 unchanged at 0.75. It \emph{found} the fault yet could \emph{not restore} the behaviour, so even the paper's thinner audit-and-repair claim does not survive a controlled test on a real (small) LM.
+\item \textbf{F1 --- no gating failure exists.} Qwen3.5-0.8B already answers every Swedish prompt in Swedish (sv-ratio 8/8) and scores 0.875 on the grammar probes. The obvious WSP target --- stopping English code-switching --- is already solved.
+\item \textbf{F2 --- zero-shot WSP ``improves Swedish'' by doing nothing.} Asked to improve Swedish with no examples or forward passes, DeepSeek-V4-Pro spent $\sim$116k tokens and changed \textbf{0 parameters}; grammar, language and English were all unchanged. This reproduces the source paper's own caveat that weight editing \emph{removes} failures but cannot \emph{add} capability.
+\item \textbf{F3 --- the conventional baseline degrades Swedish output.} A LoRA fine-tune on 20 Swedish QA pairs produces qualitatively worse Swedish: 2/8 open-ended answers switch to English (sv-ratio 6/8) and several answers degenerate into repeated training echoes or a multiple-choice list, e.g.\ \emph{``Vem skrev Pippi Långstrump?''} $\rightarrow$ \emph{``A. Hans Christian Andersen. B. Oscar Wilde. C. Jane Austen\ldots''} while the base model answers the same prompt in Swedish. Grammar drops 14/16$\rightarrow$11/16, but the item count is too small to call this individually significant (see limitations); the regression is best read as \emph{directional and qualitative}.
+\item \textbf{F4 --- the grammar signal is real but no edit moves it usefully.} A magnitude-matched random edit leaves grammar at 0.875 (14/16), so the probes respond to the meaningful changes LoRA imposes, not to weight noise in general.
+\item \textbf{F5 --- a localized planted fault is found, but WSP cannot repair it.} Scaling 48 output-rows of layer 5 \texttt{mlp.down\_proj} by $4\times$ degraded noun-agreement 0.88$\rightarrow$0.75; scaling 64 rows by $6\times$ degraded V2 0.88$\rightarrow$0.75. Given the corrupted weights, the agent identified the right tensor and edited exactly those 64 rows (229{,}376 params, \texttt{down\_proj} only) --- but its repair left V2 unchanged (still 0.75). It \emph{located} the fault yet could \emph{not restore} the behaviour.
 \end{itemize}
 
 \textbf{Interpretation.} As an optimisation tool for improving Swedish, WSP fails --- not because the model is hard to steer, but because it is already at the achievable ceiling and WSP cannot add the ability it lacks. Its auditing claim is real but shallow: it can point at anomalous weights, yet a ten-line row-norm statistic does the same, and its ``repair'' produced no measurable behaviour change.
+
+\textbf{Statistical power \& limitations.} Small-$n$, single-run results, stated with counts rather than as precise estimates.
+\begin{itemize}
+\item Single seed and single model; the probe sets are 16 grammar, 8 open-ended, 10 English items, so one-item differences dominate. LoRA-vs-base grammar (14 vs 11; 3 discordant; exact McNemar $p\approx0.25$) and the planted-fault effects (7/8$\rightarrow$6/8) are \emph{not} individually significant at $\alpha=0.05$; conclusions rest on the \emph{qualitative} degeneration (English leakage, degenerate repeats, empty WSP edit, behaviour unchanged after repair).
+\item The Swedish probes are small, author-written, synthetic; the Sv/En classifier is a lexicon/count heuristic adequate for unambiguous full-answer language but not mixed code-switching.
+\item One LoRA training example (``Vad heter Sveriges huvudstad?'') is semantically close to one eval prompt (``Vad är huvudstaden i Sverige?''); this cannot have inflated the LoRA result since LoRA regressed anyway.
+\item The \texttt{wsp\_feedback} (reasoning-vs-feedback) arm was planned but not run within budget; the distinction is addressed analytically (\S1) and only zero-feedback edits were tested.
+\item Everything ran on CPU; Qwen3.5-0.8B is the source paper's exact model and was public/cached (GPT-SW3 dropped due to HF gating).
+\end{itemize}
 
 \section{Recommendation}
 

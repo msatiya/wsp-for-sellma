@@ -39,37 +39,44 @@ A clean **negative** result (WSP ≈ logit steering) is itself valuable: it tell
 | `random_edit` | magnitude-matched random perturbation | "does any edit help?" |
 | `lora` | small LoRA on Swedish examples | SE.LLMA's default alternative |
 | `wsp_zero` | DeepSeek reads weights, writes one edit (no feedback) | the actual claim |
-| `wsp_feedback` (stretch) | DeepSeek with a forward-pass budget | reasoning vs. feedback |
+| `wsp_feedback` *(not run)* | DeepSeek with a forward-pass budget | reasoning vs. feedback |
 
 **Signals.** (1) *Grammar probes* (V2 word order + gender/definite agreement, 16 held-out items) scored by log-likelihood — a **weight-level** signal insensitive to decoding. (2) *Open-ended response-language* (8 Swedish prompts) scored by an offline Sv/En language-ID — a **surface** signal. (3) *English regression* (10 factual MCQs) for forgetting. The contrast between (1) and (2) is the key diagnostic: if a "WSP" gain shows up in (2) but not (1), it is decoding/logit-level, not a genuine weight edit.
 
-**Reproducibility.** One GH200 GPU, Apptainer `qwen_inference.sif`, seed 0, full editor transcript dumped to `results/`; dev/eval probes separated.
+**Reproducibility.** Run on the cluster's x86 login node (CPU) inside an x86 Apptainer image (`pipeline-cpu.sif`: torch 2.13.0+cu130, transformers 5.15.1), model revision `2fc0636…`, seed 0, full editor transcripts dumped to `results*/`; dev/eval probes separated (dev was never used to select anything).
 
 ## 4. Results (Qwen3.5-0.8B, seed 0)
 
 | Arm | grammar acc (weight-level) | sv-ratio (surface) | en-regr acc |
 |---|---|---|---|
-| base | **0.875** | **1.00** | 0.80 |
+| base | **0.875 (14/16)** | **1.00 (8/8)** | 0.80 (8/10) |
 | prompt | — | 1.00 | — |
 | decode | — | 1.00 | — |
 | logit_bias | — | 1.00 | — |
-| random_edit | 0.875 | 1.00 | 0.70 |
-| lora | **0.688** | **0.75** | 0.90 |
+| random_edit | 0.875 | 1.00 | 0.70 (7/10) |
+| lora | **0.688 (11/16)** | **0.75 (6/8)** | 0.90 (9/10) |
 | wsp_zero (vague "improve Swedish") | 0.875 | 1.00 | 0.80 |
 
 (`prompt`/`decode`/`logit_bias` change only sampling, so their grammar log-likelihood is identical to base by construction; they are reported on the surface signal only.)
 
-**F1 — There is no "language-gating" failure to fix.** Qwen3.5-0.8B already answers every Swedish prompt in Swedish (sv-ratio 1.0) and scores 0.875 on the grammar probes. The gating hypothesis is therefore moot: the obvious WSP target (stop English code-switching) does not exist for this model.
+**F1 — There is no "language-gating" failure to fix.** Qwen3.5-0.8B already answers every Swedish prompt in Swedish (sv-ratio 8/8) and scores 0.875 on the grammar probes. The gating hypothesis is therefore moot: the obvious WSP target (stop English code-switching) does not exist for this model.
 
-**F2 — Zero-shot WSP "improves Swedish" by doing nothing.** When DeepSeek-V4-Pro was asked to *improve Swedish behaviour* with no examples or forward passes, it spent ~116k reasoning tokens and changed **0 parameters** (grammar, sv-ratio and English all unchanged). This directly reproduces the source paper's own caveat: weight editing *removes existing failures*; it does **not add capability**, and here there was no failure to remove.
+**F2 — Zero-shot WSP "improves Swedish" by doing nothing.** When DeepSeek-V4-Pro was asked to *improve Swedish behaviour* with no examples or forward passes, it spent ~116k tokens and changed **0 parameters** (grammar, sv-ratio and English all unchanged). This directly reproduces the source paper's own caveat: weight editing *removes existing failures*; it does **not add capability**, and here there was no failure to remove.
 
-**F3 — The conventional baseline (LoRA) regresses Swedish.** A small LoRA fine-tune on 20 Swedish QA pairs *lowered* grammar 0.875→0.688 and leaked two of eight open-ended answers into English (sv-ratio 0.75), even as English MCQ accuracy rose 0.80→0.90. This is exactly the destructive-adaptation risk SE.LLMA faces at scale.
+**F3 — The conventional baseline (LoRA) degrades Swedish output.** A LoRA fine-tune on 20 Swedish QA pairs produces qualitatively worse Swedish: two of eight open-ended answers switch to English (sv-ratio 6/8) and several answers degenerate into the model repeating its tiny training set or emitting a multiple-choice list, e.g. *"Vem skrev Pippi Långstrump?"* → *"A. Hans Christian Andersen. B. Oscar Wilde. C. Jane Austen…"*. By contrast the base model answers the same prompt in Swedish. Grammar also drops 14/16→11/16, but (see below) the item count is too small to call this individually significant; the regression is best read as *directional and qualitative*.
 
-**F4 — The grammar signal is real.** A magnitude-matched *random* weight edit leaves grammar at 0.875 (and only mildly dents English regression 0.80→0.70), so the grammar probes respond to meaningful edits, not noise.
+**F4 — The grammar signal is real but no edit moves it usefully.** A magnitude-matched *random* edit leaves grammar at 0.875 (14/16) — so the probes respond to the meaningful changes LoRA imposes, not to weight noise in general.
 
-**F5 — A planted, localized fault is measurable, and WSP locates — but does not repair — it.** Scaling 48 output-rows of `layer 5.mlp.down_proj` by 4× degraded noun-agreement 0.88→0.75; scaling 64 rows by 6× degraded V2 0.88→0.75 (English and the other behaviour each stayed intact), so the faults were clear and localized. Given the corrupted weights, the agent *did* identify the right tensor and edited exactly those 64 rows (229,376 params, in `down_proj` only) — but its repair left V2 unchanged at 0.75, i.e. **it found the fault yet could not restore the behaviour.** So even the paper's thinner claim — that a frontier LLM can audit and *repair* a localized fault by reasoning about weights — does not survive a controlled test on a real (if small) language model.
+**F5 — A planted, localized fault is found, but WSP cannot repair it.** Scaling 48 output-rows of `layer 5.mlp.down_proj` by 4× degraded noun-agreement 0.88→0.75; scaling 64 rows by 6× degraded V2 0.88→0.75. Given the corrupted weights, the agent identified the right tensor and edited exactly those 64 rows (229,376 params, `down_proj` only) — but its repair left V2 unchanged (still 0.75). It *located* the fault yet could *not restore* the behaviour.
 
-**Interpretation.** As an *optimisation* tool for improving Swedish, WSP fails — not because the model is hard to steer, but because it is already at the achievable ceiling and WSP cannot add capability it lacks. Its *auditing* claim is real but shallow: the agent can often point at anomalous weights, but in our test a ten-line row-norm statistic does the same, and the agent's actual "repair" produced no measurable improvement. For SE.LLMA this argues against WSP for either capability or reliability goals.
+**Interpretation.** As an *optimisation* tool for improving Swedish, WSP fails — not because the model is hard to steer, but because it is already at the achievable ceiling and WSP cannot add capability it lacks. Its *auditing* claim is real but shallow: it points at anomalous weights, but a ten-line row-norm statistic does the same, and the frontier model's "repair" produced no measurable improvement.
+
+**Statistical power & limitations.** These are small-n, single-run results, stated with counts so their strength is visible, not as precise estimates.
+- Single seed and single model; the grammar probe set is 16 items, open-ended 8, English 10, so one-item differences dominate. LoRA-vs-base grammar (14 vs 11, 3 discordant, exact McNemar p≈0.25) and the planted-fault effects (7/8→6/8) are *not* individually significant at α=0.05; the conclusions rest on the *qualitative* degeneration (English leakage, degenerate repeats, empty WSP edit, unchanged-after-repair) rather than on any single headline number.
+- The Swedish probes are small, author-written and synthetic; the offline Sv/En classifier is a lexicon/count heuristic, adequate for unambiguous full-answer language but not for mixed code-switching.
+- One LoRA training example ("Vad heter Sveriges huvudstad?") is semantically close to one eval prompt ("Vad är huvudstaden i Sverige?"); this cannot have inflated the LoRA result since LoRA regressed anyway.
+- The `wsp_feedback` (reasoning-vs-feedback) arm was planned but not run within budget; the distinction is addressed analytically (§1). Only zero-feedback edits were tested.
+- Everything ran on CPU; Qwen3.5-0.8B is the source paper's exact model and was public/cached (GPT-SW3 was dropped due to HF gating).
 
 ## 5. Recommendation
 

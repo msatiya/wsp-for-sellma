@@ -1,17 +1,21 @@
 # Results
 
-All numbers for `Qwen/Qwen3.5-0.8B`, seed 0, CPU x86 container (torch 2.13, transformers 5.15).
+All numbers for `Qwen/Qwen3.5-0.8B`, seed 0, CPU x86 container (torch 2.13.0+cu130,
+transformers 5.15.1).
 
-## Headline
+**Model revision:** snapshot `2fc06364715b967f1860aea9cf38778875588b17` (HF cache
+`models--Qwen--Qwen3.5-0.8B/snapshots/`).
+
+## Headline (counts in parentheses)
 
 | Arm | grammar acc (weight-level) | sv-ratio (surface) | en-regr acc |
 |---|---|---|---|
-| base | 0.875 | 1.00 | 0.80 |
+| base | 0.875 (14/16) | 1.00 (8/8) | 0.80 (8/10) |
 | prompt | — | 1.00 | — |
 | decode | — | 1.00 | — |
 | logit_bias | — | 1.00 | — |
-| random_edit | 0.875 | 1.00 | 0.70 |
-| lora | 0.688 | 0.75 | 0.90 |
+| random_edit | 0.875 (14/16) | 1.00 | 0.70 (7/10) |
+| lora | 0.688 (11/16) | 0.75 (6/8) | 0.90 (9/10) |
 | wsp_zero (vague) | 0.875 | 1.00 | 0.80 |
 
 ## Planted-fault sub-experiment
