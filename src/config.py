@@ -9,7 +9,6 @@ DEFAULT_EDITOR_MODEL = "deepseek-v4-pro-0813"
 
 TARGET_MODELS = {
     "qwen": "Qwen/Qwen3.5-0.8B",
-    "gpt-sw3": "AI-Sweden-Models/gpt-sw3-1.3b",
 }
 
 

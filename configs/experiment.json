@@ -1,7 +1,6 @@
 {
   "target_models": {
-    "qwen": "Qwen/Qwen3.5-0.8B",
-    "gpt-sw3": "AI-Sweden-Models/gpt-sw3-1.3b"
+    "qwen": "Qwen/Qwen3.5-0.8B"
   },
   "editor_model": "deepseek-v4-pro-0813",
   "arms": ["base", "prompt", "decode", "logit_bias", "random_edit", "lora", "wsp_zero"],

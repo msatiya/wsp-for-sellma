@@ -26,7 +26,7 @@ A clean **negative** result (WSP ≈ logit steering) is itself valuable: it tell
 
 ## 3. Experiment design
 
-**Subject model:** `Qwen/Qwen3.5-0.8B` (the paper's model; public, cached). *(A Swedish-native second model, GPT-SW3, was blocked by HF gating and is deferred.)* **Editor:** `deepseek-v4-pro-0813` via the Model Studio token plan.
+**Subject model:** `Qwen/Qwen3.5-0.8B` (the paper's model; public, cached). **Editor:** `deepseek-v4-pro-0813` via the Model Studio token plan.
 
 **Arms (all evaluated on one held-out set, never shown to the editor):**
 
