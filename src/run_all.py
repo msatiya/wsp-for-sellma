@@ -204,6 +204,8 @@ def main():
                 f"| sv-ratio {ev['openended']['swedish_ratio_mean']:.2f} "
                 f"| en-regr {ev['regression']['accuracy']:.3f}"
             )
+        elif "error" in r:
+            print(f"{arm:12s} | ERROR: {r['error']}")
         else:
             print(
                 f"{arm:12s} | sv-ratio {r['openended']['swedish_ratio_mean']:.2f} "

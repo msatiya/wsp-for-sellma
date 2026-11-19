@@ -8,10 +8,10 @@ def random_edit(model, frac=0.0002, sigma=1.0, seed=0):
             device = p.device
             mask = torch.rand(p.shape, generator=g, device="cpu") < frac
             if mask.any():
-                n = int(mask.sum().item())
-                noise = torch.randn(n, generator=g, device="cpu")
-                std = p.std().item()
                 vals = p.detach().cpu()
+                n = int(mask.sum().item())
+                noise = torch.randn(n, generator=g, device="cpu").to(vals.dtype)
+                std = p.std().item()
                 flat = vals.view(-1)
                 idx = torch.nonzero(mask.view(-1)).squeeze(-1)
                 flat[idx] = flat[idx] + noise * (sigma * std)
