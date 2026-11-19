@@ -1,0 +1,33 @@
+# Secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.tox/
+.mypy_cache/
+.pytest_cache/
+
+# Model weights / large binary artifacts (do NOT commit)
+models/
+*.safetensors
+*.gguf
+*.bin
+*.sif
+*.pt
+*.pth
+*.ckpt
+checkpoints/
+
+# Local scratch / raw downloads
+hf_cache/
+scratch/
+*.log
+
+# OS / editor
+.DS_Store
+*.swp
