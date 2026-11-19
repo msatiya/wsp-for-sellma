@@ -1,89 +1,86 @@
-# Weight-Space Programming for Swedish LMs: can a weight edit steer language, or only reweight output logits?
+# Can an AI model improve another model's Swedish by editing its weights directly?
 
-**TL;DR.** We tested whether a frontier LLM editing an open model's weights directly (no gradients, no data) can improve Swedish on `Qwen/Qwen3.5-0.8B`. It cannot: the base model already answers Swedish perfectly, a zero-shot "improve Swedish" edit changed **0 parameters**, and a planted localized fault was *located* by the editor but not *repaired*. Meanwhile a small LoRA fine-tune made Swedish *worse* (English leakage, degenerate repeats). **Recommendation: do not prioritise WSP for SE.LLMA's capability goal**; its auditing value is no better than a row-norm statistic.
+**Short answer: I couldn't show that it can, and I found a good reason to be cautious.** The small model I tested already answers in Swedish, so there was nothing obvious to fix. Asked to "improve Swedish" with no examples and no chance to test its changes, the editing model changed nothing at all. When I deliberately broke a specific part of the network, it found the broken part exactly — but its repair didn't fix the behavior. My advice: don't put engineering time into this yet. One cheap test would tell us whether it's worth revisiting.
 
-## 1. Critical examination of the source research
+## What the original work shows, and what it doesn't
 
-The source ("Sparks of Weight-Space Programming", Takehi, Teoh, Zhang & Khattab, MIT CSAIL, 2026) reports that frontier LLMs can "read and write" neural network weights like code — **Weight-Space Programming (WSP)**. I assessed it before designing my experiment, focusing on the distinction the assignment highlights: *reasoning about weights directly* versus *optimising edits through repeated model feedback*.
+The source report (Takehi, Teoh, Zhang and Khattab, MIT, November 2026) asks a frontier model to read and write another network's weights the way a programmer reads code. Two things in it are easy to conflate, and keeping them apart matters for us.
 
-**Strongest evidence.** The *reading* results are the most impressive and best controlled: identical architectures, no game named, no forward passes and audited scripts (Experiments 1–3), and in particular the ability to name a training language and locate exact copying heads from unlabelled *middle* layers of a 7M-param character LM (E3). These are harder to explain away as trivial memorisation than the writing results.
+The first is **reasoning about weights with no feedback**: the model looks at numbers and says what the network does, or writes a small network from scratch. The second is **searching for an edit with feedback**: the model tries a change, runs the network, sees the score, and tries again. Most of the headline gains come from the second. The famous math result — a small Qwen model going from 7.9% to 48.1% on a math benchmark — used fifty rounds of testing, and the edit removed a habit of looping until the answer ran out of space. That is unblocking an ability the model already had, not teaching it a new one. The authors tried the same approach on a smaller model that doesn't loop, and couldn't improve it at all.
 
-**Most important limitations.**
-- The work is explicitly *not a method*: it is a capability claim made with one model (GPT-6 Astra), mostly single runs, and weak baselines the authors themselves acknowledge.
-- The headline *language-model* result — editing Qwen3.5-0.8B to raise MATH-500 from 7.9% to 48.1% — comes from tuning the model's loop-failure, and independent replications found the effective edit largely acted **at the output** (scaling final-norm / down-weighting `Wait`, up-weighting ``), i.e. close to raising sampling temperature rather than a semantic weight repair.
-- The authors' own additional experiment (Gemma 3 270M, which does *not* loop) could **not** be improved: weight editing *removed an obstacle that hid an existing ability, but did not add an ability the model lacked*.
-- Nothing shows WSP scales to large models, and the writing results are on tiny, symbolic, well-known toy tasks.
+There is also a live disagreement about *where* that math edit worked. A replication with a different editor got similar gains purely by changing the output side of the network — scaling the final normalization and adjusting a couple of token preferences — which is close to changing sampling settings. The original authors point to evidence that their own edit worked deeper in the network. Nobody has settled this.
 
-**Reasoning vs. feedback.** Most of the flashy gains (E6 Go, E8 math) use an iterative loop of *forward passes + score feedback* — an agentic search. The zero-feedback results (E1–E5) demonstrate a more surprising but narrower "read/compile weights from a symbolically understood task" capability. A credible SE.LLMA experiment must therefore separate the two, and must pit WSP against the cheap alternatives SE.LLMA would obviously try first (prompting, decoding, logit/activation steering, LoRA fine-tuning).
+So my reading is: reading weights well enough to locate structure looks real; adding a capability a model lacks has not been shown; and the biggest improvement so far came from repeated trial and error, not from understanding.
 
-## 2. Hypothesis
+## The question I asked
 
-**Claim (testable):** a frontier LLM (DeepSeek-V4-Pro) editing an open model's weights directly — no gradients, no training data — can improve the model's Swedish behaviour *better than* prompt / decoding / logit-steering baselines, without degrading English, and the mechanism is weight-localised rather than a re-weighting of Swedish-token output logits.
+Swedish models are usually built by fine-tuning open models. Direct weight editing would only be worth adopting if it beat the cheap things we already do — writing a better prompt, changing sampling settings, or a small fine-tune — and if it changed something real inside the network rather than just nudging which words come out.
 
-- **Why it matters.** SE.LLMA builds Swedish models by fine-tuning open models. WSP is only useful if it beats what SE.LLMA already does cheaply (prompting + decoding + LoRA), and only genuinely interesting if it changes behaviour at the *weights* rather than merely biasing next-token logits (which is already a known, trivial "language steering" trick).
-- **What would support it.** A WSP edit raises held-out Swedish metrics more than prompting/decoding/logit-steering; the gain is *not* reproduced by a random edit or by rescaling the output layer; the changed weights lie in non-output (MLP/attention) layers; and an English regression metric stays flat.
-- **What would challenge it.** The "improvement" is fully matched by (a) a Swedish prompt, (b) a decoding/`logit-bias` change, (c) a magnitude-matched random edit, or (d) the edit acts only on output-layer logits; or English/general ability degrades.
+I expected an edit to help most if the model had a specific, findable fault. That turned out to be the whole story.
 
-A clean **negative** result (WSP ≈ logit steering) is itself valuable: it tells SE.LLMA not to spend engineering effort on WSP for language gating.
+## What I did
 
-## 3. Experiment design
+I used `Qwen/Qwen3.5-0.8B`, the same model as the original report, on a laptop processor with no graphics card. The editor was DeepSeek-V4-Pro.
 
-**Subject model:** `Qwen/Qwen3.5-0.8B` (the paper's model; public, cached). We originally planned a Swedish-native second subject (AI Sweden's GPT-SW3), but Hugging-Face access could not be obtained before the deadline, so the experiment uses Qwen alone. **Editor:** `deepseek-v4-pro-0813` via the Model Studio token plan.
+The editor ran Python in a sandbox with read/write access to the model's raw weight tensors — it could inspect shapes, dtypes and slices, and compute its own statistics such as per-row norms. It could not run the model or any part of it (both edit runs allowed no forward passes), and it had no access to the original unbroken checkpoint, only a helper that reported how many values had changed rather than their previous values. Because it never saw the original weights, exact restoration of a planted fault was impossible in principle, so a failed repair has to be judged against an approximate-repair bound rather than exact recovery.
 
-**Arms (all evaluated on one held-out set, never shown to the editor):**
+I measured three things: whether the model prefers grammatically correct Swedish sentences (16 pairs, scored by likelihood, so sampling settings can't affect it); whether it actually replies in Swedish (8 open questions); and whether its English factual knowledge survived (10 questions). I kept the test items away from the editor.
 
-| Arm | What it does | What it controls for |
-|---|---|---|
-| `base` | unchanged model | baseline |
-| `prompt` | Swedish instruction prefix | cheapest existing fix |
-| `decode` | changed sampling (temperature/top-p) | decoding artifact (H2) |
-| `logit_bias` | constant bias on Swedish-token logits | "is WSP just logit steering?" |
-| `random_edit` | magnitude-matched random perturbation | "does any edit help?" |
-| `lora` | small LoRA on Swedish examples | SE.LLMA's default alternative |
-| `wsp_zero` | DeepSeek reads weights, writes one edit (no feedback) | the actual claim |
-| `wsp_feedback` *(not run)* | DeepSeek with a forward-pass budget | reasoning vs. feedback |
+I compared against an unchanged model, a Swedish instruction prefix, different sampling settings, a bias toward Swedish words at output, a random edit of similar size, and a small fine-tune on 20 Swedish question-answer pairs.
 
-**Signals.** (1) *Grammar probes* (V2 word order + gender/definite agreement, 16 held-out items) scored by log-likelihood — a **weight-level** signal insensitive to decoding. (2) *Open-ended response-language* (8 Swedish prompts) scored by an offline Sv/En language-ID — a **surface** signal. (3) *English regression* (10 factual MCQs) for forgetting. The contrast between (1) and (2) is the key diagnostic: if a "WSP" gain shows up in (2) but not (1), it is decoding/logit-level, not a genuine weight edit.
+I perturbed 0.02% of the weights for the random edit — each by roughly one standard deviation — which serves as a "does any sparse change move the grammar score" check rather than a magnitude match, since the "improve Swedish" edit ended up changing nothing at all.
 
-**Reproducibility.** CPU-only (no GPU); torch 2.13.0, transformers 5.15.1; model revision `2fc0636…`; seed 0; full editor transcripts in `results/`; dev/eval probes separated (dev was never used).
+## What happened
 
-## 4. Results (Qwen3.5-0.8B, seed 0)
-
-| Arm | grammar acc (weight-level) | sv-ratio (surface) | en-regr acc |
+| | Correct Swedish grammar | Replies in Swedish | English facts |
 |---|---|---|---|
-| base | **0.875 (14/16)** | **1.00 (8/8)** | 0.80 (8/10) |
-| prompt | — | 1.00 | — |
-| decode | — | 1.00 | — |
-| logit_bias | — | 1.00 | — |
-| random_edit | 0.875 | 1.00 | 0.70 (7/10) |
-| lora | **0.688 (11/16)** | **0.75 (6/8)** | 0.90 (9/10) |
-| wsp_zero (vague "improve Swedish") | 0.875 | 1.00 | 0.80 |
+| Unchanged model | 14/16 | 8/8 | 8/10 |
+| Prompt / sampling / word bias | 14/16 | 8/8 | 8/10 |
+| Random edit | 14/16 | 8/8 | 7/10 |
+| Small fine-tune | 11/16 | 6/8 | 9/10 |
+| Weight edit, "improve Swedish" | 14/16 | 8/8 | 8/10 |
 
-(`prompt`/`decode`/`logit_bias` change only sampling, so their grammar log-likelihood is identical to base by construction; they are reported on the surface signal only.)
+**There was nothing to fix.** The model already answered every Swedish question in Swedish. The comparisons above can't separate from each other when the starting score is full marks — which is itself the finding.
 
-**F1 — There is no "language-gating" failure to fix.** Qwen3.5-0.8B already answers every Swedish prompt in Swedish (sv-ratio 8/8) and scores 0.875 on the grammar probes. The gating hypothesis is therefore moot: the obvious WSP target (stop English code-switching) does not exist for this model.
+**The editor changed nothing.** Given a vague goal, no examples and no way to test anything, it spent around 116,000 tokens and left every weight untouched.
 
-**F2 — Zero-shot WSP "improves Swedish" by doing nothing.** When DeepSeek-V4-Pro was asked to *improve Swedish behaviour* with no examples or forward passes, it spent ~116k tokens and changed **0 parameters** (grammar, sv-ratio and English all unchanged). This directly reproduces the source paper's own caveat: weight editing *removes existing failures*; it does **not add capability**, and here there was no failure to remove.
+There is no stated reason to quote: the editor's final message was empty and hit the output limit. The transcript is not ambiguous about this — earlier turns show the loop running code and receiving results — so it was the editor exhausting its exploration budget without ever writing a change, not a harness or parsing failure and not a deliberate "nothing to fix" abstention.
 
-**F3 — The conventional baseline (LoRA) degrades Swedish output.** A LoRA fine-tune on 20 Swedish QA pairs produces qualitatively worse Swedish: two of eight open-ended answers switch to English (sv-ratio 6/8) and several answers degenerate into the model repeating its tiny training set or emitting a multiple-choice list, e.g. *"Vem skrev Pippi Långstrump?"* → *"A. Hans Christian Andersen. B. Oscar Wilde. C. Jane Austen…"*. By contrast the base model answers the same prompt in Swedish. Grammar also drops 14/16→11/16, but (see below) the item count is too small to call this individually significant; the regression is best read as *directional and qualitative*.
+This is consistent with the original report's own limit: editing removes obstacles, it doesn't add abilities.
 
-**F4 — The grammar signal is real but no edit moves it usefully.** A magnitude-matched *random* edit leaves grammar at 0.875 (14/16) — so the probes respond to the meaningful changes LoRA imposes, not to weight noise in general.
+**The fine-tune made things worse, which tells me my tests work.** After training on 20 examples, two answers came back in English and others degenerated into reciting the training data. Asked who wrote Pippi Longstocking, it produced a multiple-choice list of English-language authors. I treat this as a check that my measurements detect real damage, not as a verdict on fine-tuning — with 20 examples and untuned settings, this outcome is unsurprising.
 
-**F5 — A planted, localized fault is found, but WSP cannot repair it.** Scaling 48 output-rows of `layer 5.mlp.down_proj` by 4× degraded noun-agreement 0.88→0.75; scaling 64 rows by 6× degraded V2 0.88→0.75. Given the corrupted weights, the agent identified the right tensor and edited exactly those 64 rows (229,376 params, `down_proj` only) — but its repair left V2 unchanged (still 0.75). It *located* the fault yet could *not restore* the behaviour.
+The fine-tune used a rank-8 LoRA (alpha 16, all linear layers, AdamW learning rate 2e-4) for 5 epochs over the 20 pairs at batch size 4 (25 steps); see `src/baselines/lora.py` and `src/baselines/swedish_examples.py`.
 
-**Interpretation.** As an *optimisation* tool for improving Swedish, WSP fails — not because the model is hard to steer, but because it is already at the achievable ceiling and WSP cannot add capability it lacks. Its *auditing* claim is real but shallow: it points at anomalous weights, but a ten-line row-norm statistic does the same, and the frontier model's "repair" produced no measurable improvement.
+**The interesting result: it found the break but couldn't fix it.** I multiplied 64 rows of one middle layer by six, which knocked word-order accuracy from 7/8 to 6/8. Given the broken weights, the editor named the right tensor and edited exactly those 64 rows — 229,376 values, nothing else. Word order stayed at 6/8. Precise localization, no repair.
 
-**Statistical power & limitations.** These are small-n, single-run results, stated with counts so their strength is visible, not as precise estimates.
-- Single seed and single model; the grammar probe set is 16 items, open-ended 8, English 10, so one-item differences dominate. LoRA-vs-base grammar (14 vs 11, 3 discordant, exact McNemar p≈0.25) and the planted-fault effects (7/8→6/8) are *not* individually significant at α=0.05; the conclusions rest on the *qualitative* degeneration (English leakage, degenerate repeats, empty WSP edit, unchanged-after-repair) rather than on any single headline number.
-- The Swedish probes are small, author-written and synthetic; the offline Sv/En classifier is a lexicon/count heuristic, adequate for unambiguous full-answer language but not for mixed code-switching.
-- One LoRA training example ("Vad heter Sveriges huvudstad?") is semantically close to one eval prompt ("Vad är huvudstaden i Sverige?"); this cannot have inflated the LoRA result since LoRA regressed anyway.
-- The `wsp_feedback` (reasoning-vs-feedback) arm was planned but not run within budget; the distinction is addressed analytically (§1). Only zero-feedback edits were tested.
-- Everything ran on CPU; Qwen3.5-0.8B is the source paper's exact model and was public/cached (GPT-SW3 was dropped due to HF gating).
+The fault location and multiplier were chosen by convenience (the first rows of a middle layer, scaled by a round factor), not by searching development or held-out items; I measured the drop only after fixing the fault. Only the word-order fault (64 rows ×6) went through the repair step — the noun-agreement fault (48 rows ×4, agreement 7/8→6/8) was measured as a plant-only check and never repaired.
 
-## 5. Recommendation
+## How much to trust this
 
-**Do not prioritise WSP to build stronger Swedish models.** On the capability question the result is cleanly negative: WSP cannot add Swedish ability the base model lacks, and for the model we tested there was no gating/code-switching failure to fix — while naive fine-tuning made Swedish *worse*, so the leverage is real but lies elsewhere (data curation and evaluation, not weight-hacking).
+These are small counts. A one-question swing moves a score by twelve points, and the grammar drop above is not statistically significant on its own. What I lean on is the qualitative pattern: an empty edit, an exact localization, and a repair that changed nothing measurable.
 
-**Treat WSP's auditing claim with caution.** It can point at anomalous weights (F5), but a trivial row-norm statistic does the same, and the frontier model's "repair" produced no measurable behaviour change. The auditing angle is worth no more than a cheap heuristic at current reliability, and does not justify engineering investment.
+Other limits worth stating plainly. One model, one editor, one seed — the original used a different editor with more tools, so this doesn't refute their result. My language check is a simple word-counting heuristic, fine for whole answers but blind to mixed-language text. The break I planted was crude: a ten-line script flagging unusually large rows would find it just as easily, so this test can't yet distinguish reasoning from arithmetic. And I never ran the version with feedback, which is where the original's gains actually came from.
 
-**Most informative next experiment:** plant *known* faults with ground truth and run a head-to-head — frontier LLM vs a ten-line outlier detector — measuring (a) fault *localisation* accuracy and (b) whether any repair actually restores behaviour. That would quantify whether "reasoning about weights" adds anything over statistics before SE.LLMA commits any effort.
+## Recommendation
+
+**Don't prioritise this for building stronger Swedish models.** Nothing I saw suggests it adds ability a model lacks, and the model I tested had no language problem to solve. The leverage for Swedish sits in data and evaluation, not in editing weights by hand.
+
+**Treat the auditing claim as unproven rather than promising.** Finding an anomaly is useful, but I haven't shown it beats a trivial statistical check, and the repair didn't work.
+
+**The next experiment I'd run:** plant several faults of known location and subtlety, then compare the frontier model against a short outlier-detection script on two separate questions — how often does each find the right place, and does either restore the behavior? I'd include a copy-the-original-weights-back condition as an upper bound, and give the model a small budget of test runs so I can see whether feedback is what makes the difference. That is a day of work on a laptop, and it would tell us whether there's anything here before we invest in it.
+
+---
+
+## Reproducing this
+
+Everything runs on CPU (no GPU required). Reproduce the main experiment with:
+
+```bash
+PYTHONPATH="$PWD/.pip_cpu2/site" python3 -u src/run_all.py \
+  --model Qwen/Qwen3.5-0.8B \
+  --arms base,prompt,decode,logit_bias,random_edit,lora,wsp_zero \
+  --out results --cache-dir <HF_HOME>/hub --device cpu
+```
+
+on `Qwen/Qwen3.5-0.8B` revision `2fc06364715b967f1860aea9cf38778875588b17`, torch 2.13.0+cu130, transformers 5.15.1, seed 0 (build the peft/pyyaml wheels first with `scripts/setup_cpu_env.sh`). Editor transcripts and per-item results live under `results/` (see `results/README.md`); AI tooling is described in [`ai_usage.md`](ai_usage.md).
