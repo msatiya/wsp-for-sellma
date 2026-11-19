@@ -8,11 +8,8 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
-.tox/
-.mypy_cache/
-.pytest_cache/
 
-# Model weights / large binary artifacts (do NOT commit)
+# Model weights / large binary artifacts
 models/
 *.safetensors
 *.gguf
@@ -23,24 +20,15 @@ models/
 *.ckpt
 checkpoints/
 
-# Local scratch / raw downloads
-hf_cache/
-scratch/
-*.log
-
-# OS / editor
-.DS_Store
-*.swp
-# SLURM transient logs
-logs/
-.pip_user/
-.peft/
+# Local pip/venv dirs used to run the CPU path
+.pip_cpu2/
 
 # LaTeX build artifacts
 report/*.aux
 report/*.log
 report/*.out
 report/*.toc
-.pip_cpu/
-.venv_cpu/
-.pip_cpu2/
+
+# OS / editor
+.DS_Store
+*.swp

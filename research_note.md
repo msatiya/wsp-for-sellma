@@ -45,7 +45,7 @@ A clean **negative** result (WSP ≈ logit steering) is itself valuable: it tell
 
 **Signals.** (1) *Grammar probes* (V2 word order + gender/definite agreement, 16 held-out items) scored by log-likelihood — a **weight-level** signal insensitive to decoding. (2) *Open-ended response-language* (8 Swedish prompts) scored by an offline Sv/En language-ID — a **surface** signal. (3) *English regression* (10 factual MCQs) for forgetting. The contrast between (1) and (2) is the key diagnostic: if a "WSP" gain shows up in (2) but not (1), it is decoding/logit-level, not a genuine weight edit.
 
-**Reproducibility.** CPU-only (no GPU); torch 2.13.0, transformers 5.15.1; model revision `2fc0636…`; seed 0; full editor transcripts in `results*/`; dev/eval probes separated (dev was never used).
+**Reproducibility.** CPU-only (no GPU); torch 2.13.0, transformers 5.15.1; model revision `2fc0636…`; seed 0; full editor transcripts in `results/`; dev/eval probes separated (dev was never used).
 
 ## 4. Results (Qwen3.5-0.8B, seed 0)
 

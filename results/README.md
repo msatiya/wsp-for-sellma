@@ -25,16 +25,19 @@ harming English:
 
 | run | plant | effect |
 |---|---|---|
-| results_cpu_plant | 48 rows x4 | agreement 0.88 -> 0.75 (V2 unaffected) |
-| results_cpu_plantfix | 64 rows x6 | V2 0.88 -> 0.75; WSP edited exactly 229,376 params (the 64 rows) but did **not** restore V2 (still 0.75) |
+| `plant/` | 48 rows x4 | agreement 0.88 -> 0.75 (V2 unaffected) |
+| `plantfix/` | 64 rows x6 | V2 0.88 -> 0.75; WSP edited exactly 229,376 params (the 64 rows) but did **not** restore V2 (still 0.75) |
 
 ## Raw data
 
-- `results_cpu/Qwen__Qwen3.5-0.8B/results.json` — base/prompt/decode/logit_bias/lora (+ errored random_edit)
-- `results_cpu_random/results.json` — random_edit (corrected run)
-- `results_cpu_wsp/results.json` + `wsp_transcript.json` + `wsp_diff.json` — vague "improve Swedish" WSP run (0 params changed, ~116k tokens)
-- `results_cpu_plant/results.json` — plant-only (48 rows x4)
-- `results_cpu_plantfix/results.json` + `wsp_transcript.json` + `wsp_diff.json` — plant + WSP repair (64 rows x6)
+- `main/results.json` — base / prompt / decode / logit_bias / lora (+ the corrected
+  `random_edit` arm, merged in from the re-run; see its `_note`)
+- `random/results.json` — the standalone corrected `random_edit` run
+- `wsp/` (`results.json`, `wsp_transcript.json`, `wsp_diff.json`) — zero-shot "improve
+  Swedish" WSP run (0 params changed, ~116k tokens)
+- `plant/results.json` — plant-only (48 rows x4)
+- `plantfix/` (`results.json`, `wsp_transcript.json`, `wsp_diff.json`) — plant + WSP repair
+  (64 rows x6)
 
 Open-ended completions (the "evaluation examples") are inside each `results.json` under
 `eval.openended.samples`; grammar probe-level predictions under `eval.grammar.results`.

@@ -4,9 +4,6 @@ Candidate assignment: investigate whether the ideas in *"Sparks of Weight-Space
 Programming"* (Takehi et al., MIT CSAIL, 2026) are useful for SE.LLMA's goal of
 building strong Swedish language models.
 
-- [`docs/01_assignment-and-research-digest.md`](docs/01_assignment-and-research-digest.md) — assignment, paper digest + critique, SE.LLMA context, environment.
-- [`docs/02_experiment-plan.md`](docs/02_experiment-plan.md) — hypothesis, arms, signals, repo layout.
-- [`docs/03_decisions-log.md`](docs/03_decisions-log.md) — adaptations & constraints during the run.
 - [`research_note.md`](research_note.md) — the 1–2 page research note (hypothesis, results, recommendation).
 - [`report/report.pdf`](report/report.pdf) — the longer PDF report.
 - [`results/README.md`](results/README.md) — headline numbers and pointers to raw artifacts.
@@ -38,7 +35,7 @@ building strong Swedish language models.
 - Any Python env with `torch>=2.6` and `transformers>=5` (the `qwen3_5` architecture
   needs torch>=2.6). We ran CPU-only; no GPU is required.
 - Editor API: Alibaba Model Studio "Token Plan", OpenAI-compatible.
-- (Cluster-specific notes on how we actually executed it are in `docs/03_decisions-log.md`.)
+
 
 ## Setup
 
@@ -63,14 +60,14 @@ PYTHONPATH="$PWD/.pip_cpu2/site" python3 -u src/run_all.py \
 The `wsp_zero` (vague) arm and the planted-fault repair also have standalone runners:
 `src/run_single.py` and `src/plant_and_fix.py`.
 
-Results land under `results*`/; see `results/README.md`.
+Results land under `results/`; see `results/README.md`.
 
 ## Layout
 
 ```
-docs/        digest + plan
-src/         package (harness, eval, baselines, run_all.py)
-configs/     experiment.json, probes.json
-slurm/       run_experiment.slurm
-results/     outputs (gitignored for large artifacts)
+src/         package (harness, eval, baselines, orchestrators)
+configs/     experiment.json
+report/      report.tex + compiled report.pdf
+results/     results + editor transcripts (see results/README.md)
+scripts/     setup_cpu_env.sh (peft/pyyaml wheels)
 ```
