@@ -8,7 +8,8 @@ def random_edit(model, frac=0.0002, sigma=1.0, seed=0):
             device = p.device
             mask = torch.rand(p.shape, generator=g, device="cpu") < frac
             if mask.any():
-                noise = torch.randn(tuple(torch.nonzero(mask).shape[0],), generator=g, device="cpu")
+                n = int(mask.sum().item())
+                noise = torch.randn(n, generator=g, device="cpu")
                 std = p.std().item()
                 vals = p.detach().cpu()
                 flat = vals.view(-1)
